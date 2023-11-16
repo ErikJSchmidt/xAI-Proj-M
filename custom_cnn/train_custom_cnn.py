@@ -8,7 +8,7 @@ from torchvision.datasets import ImageFolder
 from torchvision.transforms import ToTensor
 from torch.utils.data import random_split
 from torch.utils.data.dataloader import DataLoader
-from models import Cifar10CnnModel, accuracy, evaluate, fit
+from models import Cifar10CnnModel, accuracy, evaluate, fit, get_default_device, DeviceDataLoader, to_device
 
 
 
@@ -63,11 +63,19 @@ def load_dataset_and_train_cnn(data_dir):
     )
 
     # Get ready for GPU with Cuda
+    device = get_default_device()
+    print("Detected device: ", device)
+    device_aware_train_data_loader = DeviceDataLoader(train_data_loader, device)
+    device_aware_validation_data_loader = DeviceDataLoader(validation_data_loader, device)
 
     # Actually train the model
-    model = Cifar10CnnModel()
+    model = to_device(Cifar10CnnModel(), device)
 
-    history = fit(num_epochs, lr, model, train_data_loader, validation_data_loader, opt_func)
+    history = fit(num_epochs, lr, model, device_aware_train_data_loader, device_aware_validation_data_loader, opt_func)
+    print(history)
+
+    evaluation = evaluate(model, device_aware_validation_data_loader)
+    print(evaluation)
 
 
 
@@ -80,4 +88,6 @@ if __name__ == "__main__":
     data_dir = sys.argv[1]
     print("download cifar10 dataset to " + data_dir)
     download_and_unpack_dataset(data_dir)
+    print("start training function")
+    load_dataset_and_train_cnn(data_dir)
 
