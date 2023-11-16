@@ -39,6 +39,7 @@ def load_dataset_and_train_cnn(data_dir):
     opt_func = torch.optim.Adam
     lr = 0.001
 
+    print("Load train data from " + train_dataset_root_path)
     # Load dataset folder into torch dataset
     train_dataset = ImageFolder(
         root=train_dataset_root_path,
