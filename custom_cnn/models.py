@@ -89,6 +89,7 @@ def fit(epochs, lr, model, train_loader, val_loader, opt_func=torch.optim.SGD):
     history = []
     optimizer = opt_func(model.parameters(), lr)
     for epoch in range(epochs):
+        print("Epoce:", epoch)
         # Training Phase
         model.train()
         train_losses = []
