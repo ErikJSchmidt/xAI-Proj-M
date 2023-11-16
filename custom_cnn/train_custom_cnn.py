@@ -1,4 +1,5 @@
 import sys
+import os
 import time
 from torchvision.datasets.utils import download_url
 import tarfile
@@ -14,6 +15,9 @@ from models import Cifar10CnnModel, accuracy, evaluate, fit, get_default_device,
 
 # ---- Downloading Cifar10 ----
 def download_and_unpack_dataset(data_dir):
+    if os.path.exists(data_dir + "/cifar10"):
+        print("Data already downloaded")
+        return
     # Download the dataset to data directory
     dataset_url = "https://s3.amazonaws.com/fast-ai-imageclas/cifar10.tgz"
     download_url(dataset_url, data_dir)
