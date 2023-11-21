@@ -129,8 +129,9 @@ def fit_dyn(lim, lr, model, train_loader, val_loader, opt_func = torch.optim.SGD
         result['train_loss'] = torch.stack(train_losses).mean().item()
         model.epoch_end(epoch, result)
         history.append(result)
-        if len(val_accs) >= 2 and (val_accs[-1] - val_accs[-2]) < lim:
+        if len(val_accs) >= 3 and (val_accs[-1] - val_accs[-3]) < lim:
             cont = False
+        epoch += 1
     return history
 
 def get_default_device():
