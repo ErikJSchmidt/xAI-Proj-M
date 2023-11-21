@@ -106,6 +106,33 @@ def fit(epochs, lr, model, train_loader, val_loader, opt_func=torch.optim.SGD):
         history.append(result)
     return history
 
+def fit_dyn(lim, lr, model, train_loader, val_loader, opt_func = torch.optim.SGD):
+    history = []
+    val_accs = []
+    optimizer = opt_func(model.parameters(), lr)
+    cont = True
+    epoch = 1
+    while cont:
+        print('Epoch:', epoch)
+        # Training Phase
+        model.train()
+        train_losses = []
+        for batch in train_loader:
+            loss = model.training_step(batch)
+            train_losses.append(loss)
+            loss.backward()
+            optimizer.step()
+            optimizer.zero_grad()
+        # Validation Phase
+        result = evaluate(model, val_loader)
+        val_accs.append(result['val_acc'])
+        result['train_loss'] = torch.stack(train_losses).mean().item()
+        model.epoch_end(epoch, result)
+        history.append(result)
+        if len(val_accs) >= 2 and (val_accs[-1] - val_accs[-2]) < lim:
+            cont = False
+    return history
+
 def get_default_device():
     """Pick GPU if available, else CPU"""
     if torch.cuda.is_available():
