@@ -13,6 +13,11 @@ Copied from https://www.kaggle.com/code/shadabhussain/cifar-10-cnn-using-pytorch
 Equips the model with some utility functions for training and validation the model.
 """
 class ImageClassificationBase(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.network = None
+        self.model_type = 'ImageClassification'
+
     def training_step(self, batch):
         images, labels = batch
         out = self(images)                  # Generate predictions
@@ -36,6 +41,19 @@ class ImageClassificationBase(nn.Module):
     def epoch_end(self, epoch, result):
         print("Epoch [{}], train_loss: {:.4f}, val_loss: {:.4f}, val_acc: {:.4f}".format(
             epoch, result['train_loss'], result['val_loss'], result['val_acc']))
+        
+    def save_model(self, save_model_dir):
+        '''
+        Saves a model to save_model_dir.
+        '''
+        if not os.path.exists(save_model_dir):
+            os.makedirs(save_model_dir)
+        
+        timestamp = datetime.now().strftime('%Y%m%d_%H:%M')
+        torch.save(
+            self.network.state_dict(),
+            save_model_dir + '/' + self.model_type + '_' + timestamp
+        )
 
 
 """
@@ -45,6 +63,7 @@ Implements a simple CNN architecture of three conv+pool blocks followed by final
 class Cifar10CnnModel(ImageClassificationBase):
     def __init__(self):
         super().__init__()
+        self.model_type = 'Cifar10CnnModel'
         self.network = nn.Sequential(
             nn.Conv2d(3, 32, kernel_size=3, padding=1),
             nn.ReLU(),
@@ -74,15 +93,15 @@ class Cifar10CnnModel(ImageClassificationBase):
     def forward(self, xb):
         return self.network(xb)
 
-    def save_model(self, save_model_dir):
-        if not os.path.exists(save_model_dir):
-            os.makedirs(save_model_dir)
+    # def save_model(self, save_model_dir):
+    #     if not os.path.exists(save_model_dir):
+    #         os.makedirs(save_model_dir)
 
-        timestamp = datetime.now().strftime("%Y%m%d_%H:%M")
-        torch.save(
-            self.network.state_dict(),
-            save_model_dir + "/Cifar10CnnModel_" + timestamp
-        )
+    #     timestamp = datetime.now().strftime("%Y%m%d_%H:%M")
+    #     torch.save(
+    #         self.network.state_dict(),
+    #         save_model_dir + "/Cifar10CnnModel_" + timestamp
+    #     )
 
 
 
@@ -92,6 +111,7 @@ Similar structure to 18 Layer CNN from ResNet paper.
 class Plain18Layer(ImageClassificationBase):
     def __init__(self):
         super().__init__()
+        self.model_type = 'Plain18Layer'
         self.network = nn.Sequential(
             # Conv1: Prepare by mapping to 16 feature maps
             nn.Conv2d(3,8, kernel_size=3, padding=1, bias=False),
@@ -153,20 +173,117 @@ class Plain18Layer(ImageClassificationBase):
             nn.ReLU(),
             nn.Linear(512, 10))
 
-
     def forward(self, xb):
         return self.network(xb)
 
-    def save_model(self, save_model_dir):
-        if not os.path.exists(save_model_dir):
-            os.makedirs(save_model_dir)
+    # def save_model(self, save_model_dir):
+    #     if not os.path.exists(save_model_dir):
+    #         os.makedirs(save_model_dir)
 
-        timestamp = datetime.now().strftime("%Y%m%d_%H:%M")
-        torch.save(
-            self.network.state_dict(),
-            save_model_dir + "/Plain18Layer" + timestamp
+    #     timestamp = datetime.now().strftime("%Y%m%d_%H:%M")
+    #     torch.save(
+    #         self.network.state_dict(),
+    #         save_model_dir + "/Plain18Layer" + timestamp
+    #     )
+
+'''
+Model with 12 Convolution Layers, uniformly distributed across pooling steps.
+'''
+class Uniform12Layer(ImageClassificationBase):
+    def __init__(self):
+        super().__init__()
+        self.model_type = 'Uniform12Layer'
+        self.network = nn.Sequential(
+            nn.Conv2d(3, 16, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(32, 48, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(48, 64, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+
+            nn.Conv2d(64, 96, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(96, 96, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(96, 128, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+
+            nn.Conv2d(128, 192, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(192, 192, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(192, 256, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+
+            nn.Flatten(),
+            nn.Linear(256 * 4 * 4, 1024),
+            nn.ReLU(),
+            nn.Linear(1024, 512),
+            nn.ReLU(),
+            nn.Linear(512, 10)
         )
+    
+    def forward(self, xb):
+        return self.network(xb)
 
+
+'''
+Model with 12 Convolution Layers, distributed toward the later pooling steps.
+'''
+class BackLoaded12Layer(ImageClassificationBase):
+    def __init__(self):
+        super().__init__()
+        self.model_type = 'BackLoaded12Layer'
+        self.network = nn.Sequential(
+            nn.Conv2d(3, 16, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+
+            nn.Conv2d(32, 48, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(48, 64, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(64, 96, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+
+            nn.Conv2d(96, 96, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(96, 128, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(128, 192, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(192, 192, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(192, 256, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+
+            nn.Flatten(),
+            nn.Linear(256 * 4 * 4, 1024),
+            nn.ReLU(),
+            nn.Linear(1024, 512),
+            nn.ReLU(),
+            nn.Linear(512, 10)
+        )
+    
+    def forward(self, xb):
+        return self.network(xb)
 
 
 def accuracy(outputs, labels):
@@ -202,7 +319,7 @@ def fit(epochs, lr, model, train_loader, val_loader, opt_func=torch.optim.SGD):
         history.append(result)
     return history
 
-def fit_dyn(lim, lr, model, train_loader, val_loader, opt_func = torch.optim.SGD):
+def fit_dyn(lim, min_epochs, lr, model, train_loader, val_loader, opt_func = torch.optim.SGD):
     history = []
     val_accs = []
     optimizer = opt_func(model.parameters(), lr)
@@ -225,7 +342,7 @@ def fit_dyn(lim, lr, model, train_loader, val_loader, opt_func = torch.optim.SGD
         result['train_loss'] = torch.stack(train_losses).mean().item()
         model.epoch_end(epoch, result)
         history.append(result)
-        if len(val_accs) >= 3 and (val_accs[-1] - val_accs[-3]) < lim:
+        if len(val_accs) >= 3 and (val_accs[-1] - val_accs[-3]) < lim and epoch > min_epochs:
             cont = False
         epoch += 1
     return history

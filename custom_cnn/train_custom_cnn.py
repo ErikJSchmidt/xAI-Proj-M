@@ -8,7 +8,7 @@ from torchvision.datasets import ImageFolder
 from torchvision.transforms import ToTensor
 from torch.utils.data import random_split
 from torch.utils.data.dataloader import DataLoader
-from models import Cifar10CnnModel, accuracy, evaluate, fit_dyn, get_default_device, DeviceDataLoader, to_device
+from models import Uniform12Layer, Cifar10CnnModel, Plain18Layer, BackLoaded12Layer, accuracy, evaluate, fit_dyn, get_default_device, DeviceDataLoader, to_device
 
 
 
@@ -27,13 +27,13 @@ def download_and_unpack_dataset(data_dir):
         tar.extractall(path='./data')
 
 # ---- Training the cnn ----
-def load_dataset_and_train_cnn(data_dir, store_model_dir):
+def load_dataset_and_train_cnn(data_dir, store_model_dir, model_type, save_model):
     # Setting parameters for training
     train_dataset_root_path = data_dir + "/cifar10/train"
     random_seed = 420
     torch.manual_seed(random_seed)
-    batch_size = 128
-    num_epochs = 10
+    batch_size = 256
+    min_epochs = 10
     opt_func = torch.optim.Adam
     lr = 0.001
 
@@ -72,29 +72,55 @@ def load_dataset_and_train_cnn(data_dir, store_model_dir):
     device_aware_validation_data_loader = DeviceDataLoader(validation_data_loader, device)
 
     # Actually train the model
-    model = to_device(Cifar10CnnModel(), device)
+    match model_type:
+        case 'Cifar10CnnModel':
+            model = to_device(Cifar10CnnModel(), device)
+        case 'Plain18Layer':
+            model = to_device(Plain18Layer(), device)
+        case 'Uniform12Layer':
+            model = to_device(Uniform12Layer(), device)
+        case 'BackLoaded12Layer':
+            model = to_device(BackLoaded12Layer(), device)
+        case _:
+            print('Model not found.')
+            return
 
-    history = fit_dyn(0.02, lr, model, device_aware_train_data_loader, device_aware_validation_data_loader, opt_func)
+    history = fit_dyn(0.02, min_epochs, lr, model, device_aware_train_data_loader, device_aware_validation_data_loader, opt_func)
     print(history)
 
     evaluation = evaluate(model, device_aware_validation_data_loader)
     print(evaluation)
 
-    model.save_model(store_model_dir)
+    if save_model:
+        model.save_model(store_model_dir)
 
 
 
 """
 Run in colab:
 
-    %%python3 train_custom_cnn.py "/content/drive/MyDrive/Github/{github_repo}/custom_cnn"
+    %%python3 train_custom_cnn.py "/content/drive/MyDrive/Github/{github_repo}/custom_cnn" <model_type> <save_model?>
 """
 if __name__ == "__main__":
     dir = sys.argv[1]
+    model_type = sys.argv[2]
+    save_intention = sys.argv[3]
+
+    match save_intention:
+        case 'true':
+            save_model = True
+        case 'True':
+            save_model = True
+        case 'TRUE':
+            save_model = True
+        case _:
+            save_model = False
+
     data_dir = dir + "/data"
     store_model_dir = dir + "/savedmodels"
+
     print("download cifar10 dataset to " + data_dir)
     download_and_unpack_dataset(data_dir)
     print("start training function")
-    load_dataset_and_train_cnn(data_dir, store_model_dir)
+    load_dataset_and_train_cnn(data_dir, store_model_dir, model_type, save_model)
 
