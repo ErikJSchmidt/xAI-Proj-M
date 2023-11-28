@@ -158,6 +158,9 @@ class Plain18Layer(ImageClassificationBase):
         return self.network(xb)
 
     def save_model(self, save_model_dir):
+        if not os.path.exists(save_model_dir):
+            os.makedirs(save_model_dir)
+
         timestamp = datetime.now().strftime("%Y%m%d_%H:%M")
         torch.save(
             self.network.state_dict(),
