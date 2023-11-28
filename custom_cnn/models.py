@@ -6,6 +6,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from datetime import datetime
+import os
 
 """
 Copied from https://www.kaggle.com/code/shadabhussain/cifar-10-cnn-using-pytorch/notebook .
@@ -74,6 +75,9 @@ class Cifar10CnnModel(ImageClassificationBase):
         return self.network(xb)
 
     def save_model(self, save_model_dir):
+        if not os.path.exists(save_model_dir):
+            os.makedirs(save_model_dir)
+
         timestamp = datetime.now().strftime("%Y%m%d_%H:%M")
         torch.save(
             self.network.state_dict(),
