@@ -15,7 +15,7 @@ Equips the model with some utility functions for training and validation the mod
 class ImageClassificationBase(nn.Module):
     def __init__(self):
         super().__init__()
-        self.network = None
+        self.network = nn.Sequential()
         self.model_type = 'ImageClassification'
 
     def training_step(self, batch):
@@ -54,6 +54,50 @@ class ImageClassificationBase(nn.Module):
             self.network.state_dict(),
             save_model_dir + '/' + self.model_type + '_' + timestamp
         )
+
+class SkipBlock(nn.Module):
+    '''
+    A Res-Net-style skip-connection.
+    '''
+    def __init__(self, in_channels, out_channels, stride = 1):
+        '''
+        Args:
+        -----
+        in_channels (int) : Number of input channels.
+        out_channels (int) : Number of output channels.
+        stride (int) : Stride for the Conv2d layers.
+        '''
+        super().__init__()
+
+        self.skip = nn.Sequential()
+
+        if stride != 1 or in_channels != out_channels:
+            self.skip = nn.Sequential(
+                nn.Conv2d(in_channels, out_channels, kernel_size = 3, stride = stride, padding = 1, bias = False),
+                nn.BatchNorm2d(out_channels)
+            )
+        else:
+            self.skip = None
+
+        # We could consider skipping other blocks
+        self.block = nn.Sequential(
+            nn.Conv2d(in_channels, out_channels, kernel_size = 3, stride = 1, padding = 1, bias = False),
+            nn.BatchNorm2d(out_channels),
+            nn.ReLU(),
+            nn.Conv2d(out_channels, out_channels, kernel_size = 3, stride = 1, padding = 1, bias = False),
+            nn.BatchNorm2d(out_channels)
+        )
+
+    def forward(self, x):
+        id = x
+        out = self.block(x)
+
+        if self.skip is not None:
+            id = self.skip(x)
+        
+        out += id
+        out = F.relu(out)
+        return out
 
 
 """
@@ -234,6 +278,44 @@ class Uniform12Layer(ImageClassificationBase):
     
     def forward(self, xb):
         return self.network(xb)
+
+
+class Uniform12LayerSkipped(ImageClassificationBase):
+    '''
+    Model with 12 Convolution Layers, uniformly distributed across pooling steps + Skip Connections.
+    '''
+    def __init__(self):
+        super().__init__()
+        self.model_type = 'Uniform12LayerSkipped'
+        self.network = nn.Sequential(
+            SkipBlock(3, 32, stride = 1),
+            nn.ReLU(),
+            SkipBlock(32, 64, stride = 1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+
+            SkipBlock(64, 96, stride = 1),
+            nn.ReLU(),
+            SkipBlock(96, 128, stride = 1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+
+            SkipBlock(128, 192, stride = 1),
+            nn.ReLU(),
+            SkipBlock(192, 256, stride = 1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+
+            nn.Flatten(),
+            nn.Linear(256 * 4 * 4, 1024),
+            nn.ReLU(),
+            nn.Linear(1024, 512),
+            nn.ReLU(),
+            nn.Linear(512, 10)
+        )
+    
+    def forward(self, x):
+        return self.network(x)
 
 
 '''
