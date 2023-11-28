@@ -8,7 +8,7 @@ from torchvision.datasets import ImageFolder
 from torchvision.transforms import ToTensor
 from torch.utils.data import random_split
 from torch.utils.data.dataloader import DataLoader
-from models import Uniform12Layer, Uniform12LayerSkipped, Cifar10CnnModel, Plain18Layer, BackLoaded12Layer, accuracy, evaluate, fit_dyn, get_default_device, DeviceDataLoader, to_device
+from models import Uniform12Layer, Uniform12LayerSkipped, Cifar10CnnModel, Plain18Layer, BackLoaded12Layer, BackLoaded12LayerSkipped, accuracy, evaluate, fit_dyn, get_default_device, DeviceDataLoader, to_device
 
 
 
@@ -83,6 +83,8 @@ def load_dataset_and_train_cnn(data_dir, store_model_dir, model_type, save_model
             model = to_device(Uniform12LayerSkipped(), device)
         case 'BackLoaded12Layer':
             model = to_device(BackLoaded12Layer(), device)
+        case 'BackLoaded12LayerSkipped':
+            model = to_device(BackLoaded12LayerSkipped(), device)
         case _:
             print('Model not found.')
             return

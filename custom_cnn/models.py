@@ -99,6 +99,37 @@ class SkipBlock(nn.Module):
         out = F.relu(out)
         return out
 
+class ModularSkip(nn.Module):
+    '''
+    A Res-Net-style skip-connection that takes the to-be-skipped blocks as parameter.
+    '''
+    def __init__(self, block):
+        super().__init__()
+        self.block = block
+        self.in_channels = block[0].in_channels        # Find the in_channels from block, and then out_channels
+        self.out_channels = block[-1].out_channels     # This is definitely going to break when you use this class wrong...
+
+        self.skip = nn.Sequential()
+
+        if self.in_channels != self.out_channels:
+            self.skip = nn.Sequential(
+                nn.Conv2d(self.in_channels, self.out_channels, kernel_size = 3, stride = 1, padding = 1, bias = False),
+                nn.BatchNorm2d(self.out_channels)
+            )
+        else:
+            self.skip = None
+    
+    def forward(self, x):
+        id = x
+        out = self.block(x)
+
+        if self.skip is not None:
+            id = self.skip(x)
+        
+        out += id
+        out = F.relu(out)
+        return out
+
 
 """
 Copied from https://www.kaggle.com/code/shadabhussain/cifar-10-cnn-using-pytorch/notebook .
@@ -336,7 +367,7 @@ class BackLoaded12Layer(ImageClassificationBase):
             nn.ReLU(),
             nn.Conv2d(48, 64, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
-            nn.Conv2d(64, 96, kernel_size=3, padding=1),
+            nn.Conv2d(64, 96, kernel_size=3, stride= 1, padding=1),
             nn.ReLU(),
             nn.MaxPool2d(2, 2),
 
@@ -346,7 +377,7 @@ class BackLoaded12Layer(ImageClassificationBase):
             nn.ReLU(),
             nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
-            nn.Conv2d(128, 192, kernel_size=3, padding=1),
+            nn.Conv2d(128, 192, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
             nn.Conv2d(192, 192, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
@@ -366,6 +397,73 @@ class BackLoaded12Layer(ImageClassificationBase):
     
     def forward(self, xb):
         return self.network(xb)
+
+
+class BackLoaded12LayerSkipped(ImageClassificationBase):
+    def __init__(self):
+        super().__init__()
+        self.model_type = 'BackLoaded12LayerSkipped'
+        self.network = nn.Sequential(
+            ModularSkip(
+                nn.Sequential(
+                    nn.Conv2d(3, 16, kernel_size=3, padding=1, bias = False),
+                    nn.ReLU(),
+                    nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=1, bias=False)
+                )
+            ),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+
+            ModularSkip(
+                nn.Sequential(
+                    nn.Conv2d(32, 48, kernel_size=3, stride=1, padding=1, bias=False),
+                    nn.ReLU(),
+                    nn.Conv2d(48, 64, kernel_size=3, stride=1, padding=1, bias=False),
+                    nn.ReLU(),
+                    nn.Conv2d(64, 96, kernel_size=3, stride=1, padding=1, bias=False),
+                )
+            ),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+
+            ModularSkip(
+                nn.Sequential(
+                    nn.Conv2d(96, 96, kernel_size=3, stride=1, padding=1, bias=False),
+                    nn.ReLU(),
+                    nn.Conv2d(96, 128, kernel_size=3, stride=1, padding=1, bias=False),
+                )
+            ),
+            nn.ReLU(),
+            ModularSkip(
+                nn.Sequential(
+                    nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1, bias=False),
+                    nn.ReLU(),
+                    nn.Conv2d(128, 192, kernel_size=3, stride=1, padding=1, bias=False),
+                )
+            ),
+            nn.ReLU(),
+            ModularSkip(
+                nn.Sequential(
+                    nn.Conv2d(192, 192, kernel_size=3, stride=1, padding=1, bias=False),
+                    nn.ReLU(),
+                    nn.Conv2d(192, 256, kernel_size=3, stride=1, padding=1, bias=False),
+                    nn.ReLU(),
+                    nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1, bias=False)
+                )
+            ),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+
+            nn.Flatten(),
+            nn.Linear(256 * 4 * 4, 1024),
+            nn.ReLU(),
+            nn.Linear(1024, 512),
+            nn.ReLU(),
+            nn.Linear(512, 10)
+        )
+    
+    def forward(self, x):
+        return self.network(x)
 
 
 def accuracy(outputs, labels):
