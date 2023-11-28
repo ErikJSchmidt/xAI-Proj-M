@@ -73,6 +73,78 @@ class Cifar10CnnModel(ImageClassificationBase):
         return self.network(xb)
 
 
+'''
+Similar structure to 18 Layer CNN from ResNet paper.
+'''
+class Plain18Layer():
+    def __init__(self):
+        super().__init__()
+        self.network = nn.Sequential(
+            # Conv1: Prepare by mapping to 16 feature maps
+            nn.Conv2d(3,8, kernel_size=3, padding=1, bias=False),
+            nn.ReLU(),
+
+            # Conv2:                                        Learnable params
+            nn.Conv2d(8,16, kernel_size=3, padding=1, bias=False),     # 8*16*3*3 = 1152
+            nn.ReLU(),
+            nn.Conv2d(16,16, kernel_size=3, padding=1, bias=False),     # 16*16*3*3 = 2304
+            nn.ReLU(),
+            nn.Conv2d(16,16, kernel_size=3, padding=1, bias=False),     # 16*16*3*3 = 2304
+            nn.ReLU(),
+            nn.Conv2d(16,16, kernel_size=3, padding=1, bias=False),     # 16*16*3*3 = 2304
+            nn.ReLU(),                                                  # --------------------
+            # conv2 total = 8064
+
+            nn.MaxPool2d(2, 2), # output: 16 x 16 x 16
+
+            # Conv3:
+            nn.Conv2d(16,32, kernel_size=3, padding=1, bias=False),     # 16*32*3*3 = 4608
+            nn.ReLU(),
+            nn.Conv2d(32,32, kernel_size=3, padding=1, bias=False),     # 32*32*3*3 = 9216
+            nn.ReLU(),
+            nn.Conv2d(32,32, kernel_size=3, padding=1, bias=False),     # 32*32*3*3 = 9216
+            nn.ReLU(),
+            nn.Conv2d(32,32, kernel_size=3, padding=1, bias=False),     # 32*32*3*3 = 9216
+            nn.ReLU(),                                                  # --------------------
+            # conv3 total = 32256
+
+            nn.MaxPool2d(2, 2), # output: 32 x 8 x 8
+
+            # Conv4:
+            nn.Conv2d(32,64, kernel_size=3, padding=1, bias=False),     # 32*64*3*3 = 18432
+            nn.ReLU(),
+            nn.Conv2d(64,64, kernel_size=3, padding=1, bias=False),     # 64*64*3*3 = 36864
+            nn.ReLU(),
+            nn.Conv2d(64,64, kernel_size=3, padding=1, bias=False),     # 64*64*3*3 = 36864
+            nn.ReLU(),
+            nn.Conv2d(64,64, kernel_size=3, padding=1, bias=False),     # 64*64*3*3 = 36864
+            nn.ReLU(),                                      # --------------------
+            # conv4 total = 129024
+
+            nn.MaxPool2d(2, 2), # output: 64 x 4 x 4
+
+            # Conv5:
+            nn.Conv2d(64,128, kernel_size=3, padding=1, bias=False),    # 64*128*3*3 = 73728
+            nn.ReLU(),
+            nn.Conv2d(128, 128, kernel_size=3, padding=1, bias=False),  # 128*128*3*3 = 147456
+            nn.ReLU(),
+            nn.Conv2d(128, 128, kernel_size=3, padding=1, bias=False),  # 128*128*3*3 = 147456
+            nn.ReLU(),
+            nn.Conv2d(128, 128, kernel_size=3, padding=1, bias=False),  # 128*128*3*3 = 147456
+            nn.ReLU(),                                      # --------------------
+
+            nn.Flatten(),
+            nn.Linear(128*4*4, 1024),
+            nn.ReLU(),
+            nn.Linear(1024, 512),
+            nn.ReLU(),
+            nn.Linear(512, 10))
+
+
+    def forward(self, xb):
+        return self.network(xb)
+
+
 def accuracy(outputs, labels):
     _, preds = torch.max(outputs, dim=1)
     return torch.tensor(torch.sum(preds == labels).item() / len(preds))

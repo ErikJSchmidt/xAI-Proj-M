@@ -27,7 +27,7 @@ def download_and_unpack_dataset(data_dir):
         tar.extractall(path='./data')
 
 # ---- Training the cnn ----
-def load_dataset_and_train_cnn(data_dir):
+def load_dataset_and_train_cnn(data_dir, store_model_dir):
     # Setting parameters for training
     train_dataset_root_path = data_dir + "/cifar10/train"
     random_seed = 420
@@ -80,17 +80,21 @@ def load_dataset_and_train_cnn(data_dir):
     evaluation = evaluate(model, device_aware_validation_data_loader)
     print(evaluation)
 
+    model.save_model(store_model_dir)
+
 
 
 """
 Run in colab:
 
-    %%python3 train_custom_cnn.py "/content/drive/MyDrive/Github/{github_repo}/custom_cnn/data"
+    %%python3 train_custom_cnn.py "/content/drive/MyDrive/Github/{github_repo}/custom_cnn"
 """
 if __name__ == "__main__":
-    data_dir = sys.argv[1]
+    dir = sys.argv[1]
+    data_dir = dir + "/data"
+    store_model_dir = dir + "/savedmodels"
     print("download cifar10 dataset to " + data_dir)
     download_and_unpack_dataset(data_dir)
     print("start training function")
-    load_dataset_and_train_cnn(data_dir)
+    load_dataset_and_train_cnn(data_dir, store_model_dir)
 
