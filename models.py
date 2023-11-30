@@ -77,7 +77,7 @@ class Cifar10CnnModel(ImageClassificationBase):
 '''
 Similar structure to 18 Layer CNN from ResNet paper.
 '''
-class Plain18Layer():
+class Plain18Layer(ImageClassificationBase):
     def __init__(self):
         super().__init__()
         self.network = nn.Sequential(
