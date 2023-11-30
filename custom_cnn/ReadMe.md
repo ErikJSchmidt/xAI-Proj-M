@@ -30,3 +30,7 @@ of filters is doubled so as to preserve the time complexity per layer._
 
 #### ToDo:
 - downsampling with stride 2
+
+#### Effect
+- After changing last layer, still no learning
+- After add batchnorm, 
