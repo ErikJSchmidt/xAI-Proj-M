@@ -8,7 +8,7 @@ from torchvision.datasets import ImageFolder
 from torchvision.transforms import ToTensor
 from torch.utils.data import random_split
 from torch.utils.data.dataloader import DataLoader
-from models import Cifar10CnnModel, accuracy, evaluate, fit_dyn, get_default_device, DeviceDataLoader, to_device
+from models import Plain18Layer, accuracy, evaluate, fit_dyn, get_default_device, DeviceDataLoader, to_device
 
 
 
@@ -72,7 +72,7 @@ def load_dataset_and_train_cnn(data_dir, store_model_dir):
     device_aware_validation_data_loader = DeviceDataLoader(validation_data_loader, device)
 
     # Actually train the model
-    model = to_device(Cifar10CnnModel(), device)
+    model = to_device(Plain18Layer(), device)
 
     history = fit_dyn(0.02, lr, model, device_aware_train_data_loader, device_aware_validation_data_loader, opt_func)
     print(history)

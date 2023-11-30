@@ -11,6 +11,7 @@ Copied from https://www.kaggle.com/code/shadabhussain/cifar-10-cnn-using-pytorch
 Equips the model with some utility functions for training and validation the model.
 """
 class ImageClassificationBase(nn.Module):
+
     def training_step(self, batch):
         images, labels = batch
         out = self(images)                  # Generate predictions

@@ -88,6 +88,8 @@ class Cifar10CnnModel(ImageClassificationBase):
 
 '''
 Similar structure to 18 Layer CNN from ResNet paper.
+
+
 '''
 class Plain18Layer(ImageClassificationBase):
     def __init__(self):
@@ -97,18 +99,17 @@ class Plain18Layer(ImageClassificationBase):
             nn.Conv2d(3,8, kernel_size=3, padding=1, bias=False),
             nn.ReLU(),
 
-            # Conv2:                                        Learnable params
-            nn.Conv2d(8,16, kernel_size=3, padding=1, bias=False),     # 8*16*3*3 = 1152
+            # Conv2:                                                                           Learnable params
+            nn.Conv2d(8,16, kernel_size=3, padding=1, bias=False),      # 8*16*3*3 = 1152
             nn.ReLU(),
             nn.Conv2d(16,16, kernel_size=3, padding=1, bias=False),     # 16*16*3*3 = 2304
             nn.ReLU(),
             nn.Conv2d(16,16, kernel_size=3, padding=1, bias=False),     # 16*16*3*3 = 2304
             nn.ReLU(),
-            nn.Conv2d(16,16, kernel_size=3, padding=1, bias=False),     # 16*16*3*3 = 2304
-            nn.ReLU(),                                                  # --------------------
-            # conv2 total = 8064
-
-            nn.MaxPool2d(2, 2), # output: 16 x 16 x 16
+            nn.Conv2d(16,16, kernel_size=3, padding=1, stride=2, bias=False),     # 16*16*3*3 = 2304
+            nn.ReLU(),                                                                        # --------------------
+                                                                                            # conv2 total = 8064
+            # output: 16 x 16 x 16
 
             # Conv3:
             nn.Conv2d(16,32, kernel_size=3, padding=1, bias=False),     # 16*32*3*3 = 4608
@@ -117,11 +118,11 @@ class Plain18Layer(ImageClassificationBase):
             nn.ReLU(),
             nn.Conv2d(32,32, kernel_size=3, padding=1, bias=False),     # 32*32*3*3 = 9216
             nn.ReLU(),
-            nn.Conv2d(32,32, kernel_size=3, padding=1, bias=False),     # 32*32*3*3 = 9216
+            nn.Conv2d(32,32, kernel_size=3, padding=1, stride=2, bias=False),     # 32*32*3*3 = 9216
             nn.ReLU(),                                                  # --------------------
             # conv3 total = 32256
 
-            nn.MaxPool2d(2, 2), # output: 32 x 8 x 8
+            # output: 32 x 8 x 8
 
             # Conv4:
             nn.Conv2d(32,64, kernel_size=3, padding=1, bias=False),     # 32*64*3*3 = 18432
@@ -130,11 +131,11 @@ class Plain18Layer(ImageClassificationBase):
             nn.ReLU(),
             nn.Conv2d(64,64, kernel_size=3, padding=1, bias=False),     # 64*64*3*3 = 36864
             nn.ReLU(),
-            nn.Conv2d(64,64, kernel_size=3, padding=1, bias=False),     # 64*64*3*3 = 36864
+            nn.Conv2d(64,64, kernel_size=3, padding=1, stride=2, bias=False),     # 64*64*3*3 = 36864
             nn.ReLU(),                                      # --------------------
             # conv4 total = 129024
 
-            nn.MaxPool2d(2, 2), # output: 64 x 4 x 4
+            # output: 64 x 4 x 4
 
             # Conv5:
             nn.Conv2d(64,128, kernel_size=3, padding=1, bias=False),    # 64*128*3*3 = 73728
@@ -145,14 +146,16 @@ class Plain18Layer(ImageClassificationBase):
             nn.ReLU(),
             nn.Conv2d(128, 128, kernel_size=3, padding=1, bias=False),  # 128*128*3*3 = 147456
             nn.ReLU(),                                      # --------------------
+            # conv5 total = 516696
 
+            # Classification layers
+            nn.AvgPool2d(2),
             nn.Flatten(),
-            nn.Linear(128*4*4, 1024),
-            nn.ReLU(),
-            nn.Linear(1024, 512),
-            nn.ReLU(),
-            nn.Linear(512, 10))
-
+            nn.Linear(128, 10),                                              # 2048*1024 = 2097152
+            nn.Softmax(10)
+        )                                        # 512*10 = 5120
+                                                                                            # ------------
+                                                                                            # FC total = 2626560
 
     def forward(self, xb):
         return self.network(xb)
