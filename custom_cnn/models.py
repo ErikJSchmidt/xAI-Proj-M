@@ -8,6 +8,22 @@ import torch.nn.functional as F
 from datetime import datetime
 import os
 
+
+
+"""
+Utility
+"""
+class PrintLayer(nn.Module):
+    def __init__(self, msg):
+        super(PrintLayer, self).__init__()
+        self.msg = msg
+
+    def forward(self, x):
+        # Do your print / debug stuff here
+        print(self.msg)
+        print(x.shape)
+        return x
+
 """
 Copied from https://www.kaggle.com/code/shadabhussain/cifar-10-cnn-using-pytorch/notebook .
 Equips the model with some utility functions for training and validation the model.
@@ -148,14 +164,20 @@ class Plain18Layer(ImageClassificationBase):
             nn.ReLU(),                                      # --------------------
             # conv5 total = 516696
 
+            #PrintLayer("Before AVG Pool"),
+
             # Classification layers
-            nn.AvgPool2d(2),
+            nn.AvgPool2d(4, stride=2),
+            #PrintLayer("After Pool"),
             nn.Flatten(),
-            nn.Linear(128, 10),                                              # 2048*1024 = 2097152
-            nn.Softmax(10)
-        )                                        # 512*10 = 5120
-                                                                                            # ------------
-                                                                                            # FC total = 2626560
+            #PrintLayer("After flatten"),
+            nn.Linear(128, 10),
+            #PrintLayer("After linear"),
+            nn.Softmax(),
+            #PrintLayer("After softmax"),
+        )
+
+
 
     def forward(self, xb):
         return self.network(xb)
@@ -260,3 +282,4 @@ class DeviceDataLoader():
     def __len__(self):
         """Number of batches"""
         return len(self.dl)
+#%%
