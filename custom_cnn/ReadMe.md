@@ -33,4 +33,4 @@ of filters is doubled so as to preserve the time complexity per layer._
 
 #### Effect
 - After changing last layer, still no learning
-- After add batchnorm, 
+- custom_cnn/savedmodels/Plain18Layer20231130_19:29: After add batchnorm, the model improves on the baseline acc and learns throught the 20 epochs we tried
