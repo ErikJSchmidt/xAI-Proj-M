@@ -21,11 +21,11 @@ class ModelWrapper:
         #print("\n\n\n------------batch --------------\n" + str(batch))
         self.model.eval()
         #print("batch lenght" + str(len(batch)))
-        #images = batch[0]
-        #labels = batch[1]
+        images = batch[0]
+        labels = batch[1]
         #print(images)
         #print(labels)
-        images, labels = batch
+        #images, labels = batch
         out = self.model(images)  # Generate predictions
         loss = F.cross_entropy(out, labels)  # Calculate loss
         acc = accuracy(out, labels)  # Calculate accuracy
