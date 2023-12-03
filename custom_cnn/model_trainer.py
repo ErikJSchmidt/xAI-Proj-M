@@ -139,7 +139,7 @@ class ModelTrainer:
             momentum=momentum
         )
 
-        learning_rate_scheduler = ReduceLROnPlateau(optimizer, 'min')
+        learning_rate_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=10)
 
         for epoch in range(epochs):
             print("Epoce:", epoch)
