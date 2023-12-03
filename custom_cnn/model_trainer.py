@@ -127,10 +127,7 @@ class ModelTrainer:
             # Training Phase
             train_losses = []
             train_accuracies = []
-            print("train")
-            print(type(train_loader))
             for batch in train_loader:
-                print(type(batch))
                 batch_train_result = self.model_wrapper.training_step(batch)
                 loss = batch_train_result['batch_loss']
                 train_losses.append(loss)
