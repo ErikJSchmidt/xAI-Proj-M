@@ -45,7 +45,7 @@ class ModelWrapper:
             }
         """
         # Per batch in data loader get mean metrics on that batch
-        batch_outputs = [self.validation_step(batch) for batch in data_loader[0]]
+        batch_outputs = [self.validation_step(batch) for batch in data_loader]
 
         """
         batch_outputs = []

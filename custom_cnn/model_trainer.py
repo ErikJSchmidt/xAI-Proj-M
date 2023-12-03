@@ -24,6 +24,9 @@ class ModelTrainer:
 
         device_aware_train_data_loader, device_aware_validation_data_loader, device_aware_test_data_loader = self.prepare_dataloaders()
 
+        print(type(device_aware_train_data_loader))
+        print(type(device_aware_validation_data_loader))
+        print(type(device_aware_test_data_loader))
 
         training_history = self.fit(
             epochs=self.trainer_config['epochs'],
@@ -137,7 +140,7 @@ class ModelTrainer:
                 optimizer.zero_grad()
             # Validation phase
             print("evaluate")
-            epoch_val_result = self.model_wrapper.evaluate_model(val_loader)
+            epoch_val_result = self.model_wrapper.evaluate_model(val_loader[0])
 
             epoch_result = {
                 'val_loss': epoch_val_result['mean_loss'],
