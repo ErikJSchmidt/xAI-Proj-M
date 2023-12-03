@@ -1,0 +1,148 @@
+import json
+
+from model_wrapper import ModelWrapper
+from datetime import datetime
+import os
+import torch
+from torchvision.datasets import ImageFolder
+from torchvision.transforms import ToTensor
+from torch.utils.data import random_split
+from torch.utils.data.dataloader import DataLoader
+from device_utils import DeviceDataLoader, get_default_device
+
+
+class ModelTrainer:
+
+    def __init__(self, model_wrapper: ModelWrapper, absolute_trainer_config):
+        self.model_wrapper = model_wrapper
+        self.trainer_config = absolute_trainer_config
+
+    def train_model(self):
+        # Setting parameters for training
+        torch.manual_seed(self.trainer_config['random_seed'])
+        opt_func = torch.optim.Adam
+
+        device_aware_train_data_loader, device_aware_validation_data_loader, device_aware_test_data_loader = self.prepare_dataloaders()
+
+        training_history = self.fit(
+            epochs=self.trainer_config['epochs'],
+            lr=self.trainer_config['learning_rate'],
+            train_loader=device_aware_train_data_loader,
+            val_loader=device_aware_validation_data_loader,
+            opt_func=opt_func)
+
+        final_test_result = self.model_wrapper.evaluate_model(device_aware_test_data_loader)
+        final_test_result = {
+            'test_loss':final_test_result['loss'],
+            'test_Acc': final_test_result['acc']
+        }
+        print(f"Final test result:\n{final_test_result}")
+
+
+        # Create subfolder for model and results of this training run
+        if not os.path.exists(self.trainer_config['store_model_dir']):
+            os.makedirs(self.trainer_config['store_model_dir'])
+
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M")
+        model_subfolder_name = self.trainer_config['model_name'] + "_" + timestamp
+        model_subfolder_path = self.trainer_config['store_model_dir'] + "/" + model_subfolder_name
+        os.makedirs(model_subfolder_path)
+
+        # Save training results
+        training_run = {
+            'training_config':self.trainer_config,
+            'training_history':training_history,
+            'final_test_result':final_test_result
+        }
+
+        training_run_file = open(model_subfolder_path + "/training_run.json", "w+")
+        json.dump(training_run, training_run_file)
+        training_run_file.close()
+
+        # Save the fitted model
+        self.model_wrapper.save_model(
+            dir_path=model_subfolder_path
+        )
+
+    def prepare_dataloaders(self):
+        print("Load train data from " + self.trainer_config['train_dataset_dir'])
+        # Load dataset folder into torch dataset
+        train_dataset = ImageFolder(
+            root=self.trainer_config['train_dataset_dir'],
+            transform=ToTensor()
+        )
+
+        # Split train dataset for training and validation
+        validation_dataset_size = 5000
+        train_dataset_size = len(train_dataset) - validation_dataset_size
+        train_subset, validation_subset = random_split(train_dataset, [train_dataset_size, validation_dataset_size])
+
+        # Create DataLoaders
+        train_data_loader = DataLoader(
+            dataset=train_subset,
+            batch_size=self.trainer_config['batch_size'],
+            shuffle=True,
+            num_workers=4,
+            pin_memory=False  # should be True if cuda is available
+        )
+        validation_data_loader = DataLoader(
+            dataset=validation_subset,
+            batch_size=self.trainer_config['batch_size'],
+            shuffle=True,
+            num_workers=4,
+            pin_memory=False  # should be True if cuda is available
+        )
+
+        print(
+            "Load test data from " + self.trainer_config['test_dataset_dir'])  # Load dataset folder into torch dataset
+        test_dataset = ImageFolder(
+            root=self.trainer_config['train_dataset_dir'],
+            transform=ToTensor()
+        )
+        # Create DataLoader
+        test_data_loader = DataLoader(
+            dataset=test_dataset,
+            batch_size=self.trainer_config['batch_size'],
+            shuffle=True,
+            num_workers=4,
+            pin_memory=False  # should be True if cuda is available
+        )
+
+        # Get ready for GPU with Cuda
+        device = get_default_device()
+        print("Detected device: ", device)
+        device_aware_train_data_loader = DeviceDataLoader(train_data_loader, device)
+        device_aware_validation_data_loader = DeviceDataLoader(validation_data_loader, device),
+        device_aware_test_data_loader = DeviceDataLoader(test_data_loader, device)
+
+        return device_aware_train_data_loader, device_aware_validation_data_loader, device_aware_test_data_loader
+
+    def fit(self, epochs, lr, train_loader, val_loader, opt_func=torch.optim.SGD):
+        history = []
+        optimizer = opt_func(self.model_wrapper.model.parameters(), lr)
+        for epoch in range(epochs):
+            print("Epoce:", epoch)
+            # Training Phase
+            train_losses = []
+            train_accuracies = []
+            for batch in train_loader:
+                batch_train_result = self.model_wrapper.training_step(batch)
+                loss = batch_train_result['batch_loss']
+                train_losses.append(loss)
+                train_accuracies.append(batch_train_result['batch_acc'])
+                loss.backward()
+                optimizer.step()
+                optimizer.zero_grad()
+            # Validation phase
+            epoch_val_result = self.model_wrapper.evaluate_model(val_loader)
+
+            epoch_result = {
+                'val_loss': epoch_val_result['mean_loss'],
+                'val_acc': epoch_val_result['mean_acc'],
+                'train_loss': torch.stack(train_losses).mean().item(),
+                'train_acc': torch.stack(train_accuracies).mean().item(),
+            }
+
+            history.append(epoch_result)
+            print(f"Epoch {epoch}:\n{epoch_result}")
+        return history
