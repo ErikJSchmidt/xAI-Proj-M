@@ -39,11 +39,17 @@ class ModelWrapper:
             }
         """
         # Per batch in data loader get mean metrics on that batch
-        batch_outputs = [self.validation_step(batch) for batch in data_loader]
+        #batch_outputs = [self.validation_step(batch) for batch in data_loader]
+
+        batch_outputs = []
+        for batch in data_loader:
+            batch_output = self.validation_step(batch)
+            print(batch_output)
+            batch_outputs.append(batch_output)
         # Return list of batch results
-        batch_losses = [x['loss'] for x in batch_outputs]
+        batch_losses = [x['batch_loss'] for x in batch_outputs]
         epoch_loss = torch.stack(batch_losses).mean()  # Combine losses
-        batch_accs = [x['acc'] for x in batch_outputs]
+        batch_accs = [x['batch_acc'] for x in batch_outputs]
         epoch_acc = torch.stack(batch_accs).mean()  # Combine accuracies
         return {'mean_loss': epoch_loss.item(), 'mean_acc': epoch_acc.item()}
 

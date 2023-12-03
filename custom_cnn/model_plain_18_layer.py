@@ -81,7 +81,7 @@ class Plain18Layer(nn.Module):
             #PrintLayer("After flatten"),
             nn.Linear(128, 10),
             #PrintLayer("After linear"),
-            nn.Softmax(dim=10),
+            nn.Softmax(1),
             #PrintLayer("After softmax"),
         )
 

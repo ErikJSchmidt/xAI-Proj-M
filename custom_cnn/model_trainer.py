@@ -33,11 +33,10 @@ class ModelTrainer:
 
         final_test_result = self.model_wrapper.evaluate_model(device_aware_test_data_loader)
         final_test_result = {
-            'test_loss':final_test_result['loss'],
+            'test_loss': final_test_result['loss'],
             'test_Acc': final_test_result['acc']
         }
         print(f"Final test result:\n{final_test_result}")
-
 
         # Create subfolder for model and results of this training run
         if not os.path.exists(self.trainer_config['store_model_dir']):
@@ -50,9 +49,9 @@ class ModelTrainer:
 
         # Save training results
         training_run = {
-            'training_config':self.trainer_config,
-            'training_history':training_history,
-            'final_test_result':final_test_result
+            'training_config': self.trainer_config,
+            'training_history': training_history,
+            'final_test_result': final_test_result
         }
 
         training_run_file = open(model_subfolder_path + "/training_run.json", "w+")
