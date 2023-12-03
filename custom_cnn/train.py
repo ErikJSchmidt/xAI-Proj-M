@@ -38,7 +38,9 @@ def train(working_dir, trainer_config):
         'random_seed': trainer_config['random_seed'],
         'batch_size': trainer_config['batch_size'],
         'epochs': trainer_config['epochs'],
-        'learning_rate': trainer_config['learning_rate']
+        'learning_rate': trainer_config['learning_rate'],
+        'weight_decay': trainer_config['weight_decay'],
+        'momentum': trainer_config['momentum']
     }
 
     if trainer_config['model_name'] == "Plain18Layer":

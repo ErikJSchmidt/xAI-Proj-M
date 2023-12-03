@@ -72,17 +72,12 @@ class Plain18Layer(nn.Module):
             nn.ReLU(),                                      # --------------------
             # conv5 total = 516696
 
-            #PrintLayer("Before AVG Pool"),
 
             # Classification layers
             nn.AvgPool2d(4, stride=2),
-            #PrintLayer("After Pool"),
             nn.Flatten(),
-            #PrintLayer("After flatten"),
             nn.Linear(128, 10),
-            #PrintLayer("After linear"),
             nn.Softmax(1),
-            #PrintLayer("After softmax"),
         )
 
 

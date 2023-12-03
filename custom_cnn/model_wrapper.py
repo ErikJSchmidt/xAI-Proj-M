@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from device_utils import get_default_device, to_device, accuracy
+from utility_functions import get_default_device, to_device, accuracy
 
 
 class ModelWrapper:

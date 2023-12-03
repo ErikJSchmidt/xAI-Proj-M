@@ -8,7 +8,8 @@ from torchvision.datasets import ImageFolder
 from torchvision.transforms import ToTensor
 from torch.utils.data import random_split
 from torch.utils.data.dataloader import DataLoader
-from device_utils import DeviceDataLoader, get_default_device
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+from utility_functions import DeviceDataLoader, get_default_device
 
 
 class ModelTrainer:
@@ -20,7 +21,7 @@ class ModelTrainer:
     def train_model(self):
         # Setting parameters for training
         torch.manual_seed(self.trainer_config['random_seed'])
-        opt_func = torch.optim.Adam
+        opt_func = torch.optim.SGD
 
         device_aware_train_data_loader, device_aware_validation_data_loader, device_aware_test_data_loader = self.prepare_dataloaders()
 
@@ -31,16 +32,18 @@ class ModelTrainer:
         training_history = self.fit(
             epochs=self.trainer_config['epochs'],
             lr=self.trainer_config['learning_rate'],
+            weight_decay=self.trainer_config['weight_decay'],
+            momentum=self.trainer_config['momentum'],
             train_loader=device_aware_train_data_loader,
-            val_loader=device_aware_validation_data_loader,
-            opt_func=opt_func)
+            val_loader=device_aware_validation_data_loader
+            )
 
 
         print("Done with training. Now on to test set")
         final_test_result = self.model_wrapper.evaluate_model(device_aware_test_data_loader)
         final_test_result = {
             'test_loss': final_test_result['mean_loss'],
-            'test_Acc': final_test_result['mean_acc']
+            'test_acc': final_test_result['mean_acc']
         }
         print(f"Final test result:\n{final_test_result}")
 
@@ -87,14 +90,14 @@ class ModelTrainer:
             dataset=train_subset,
             batch_size=self.trainer_config['batch_size'],
             shuffle=True,
-            num_workers=2,
+            num_workers=4,
             pin_memory=False  # should be True if cuda is available
         )
         validation_data_loader = DataLoader(
             dataset=validation_subset,
             batch_size=self.trainer_config['batch_size'],
             shuffle=True,
-            num_workers=2,
+            num_workers=4,
             pin_memory=False  # should be True if cuda is available
         )
 
@@ -109,7 +112,7 @@ class ModelTrainer:
             dataset=test_dataset,
             batch_size=self.trainer_config['batch_size'],
             shuffle=True,
-            num_workers=2,
+            num_workers=4,
             pin_memory=False  # should be True if cuda is available
         )
 
@@ -120,11 +123,23 @@ class ModelTrainer:
         device_aware_validation_data_loader = DeviceDataLoader(validation_data_loader, device),
         device_aware_test_data_loader = DeviceDataLoader(test_data_loader, device)
 
-        return device_aware_train_data_loader, device_aware_validation_data_loader, device_aware_test_data_loader
+        return [
+            device_aware_train_data_loader,
+            device_aware_validation_data_loader,
+            device_aware_test_data_loader
+        ]
 
-    def fit(self, epochs, lr, train_loader, val_loader, opt_func=torch.optim.SGD):
+    def fit(self, epochs, lr, weight_decay, momentum, train_loader, val_loader):
         history = []
-        optimizer = opt_func(self.model_wrapper.model.parameters(), lr)
+        optimizer = torch.optim.SGD(
+            self.model_wrapper.model.parameters(),
+            lr,
+            weight_decay=weight_decay,
+            momentum=momentum
+        )
+
+        learning_rate_scheduler = ReduceLROnPlateau(optimizer, 'min')
+
         for epoch in range(epochs):
             print("Epoce:", epoch)
             # Training Phase
@@ -143,11 +158,14 @@ class ModelTrainer:
             epoch_val_result = self.model_wrapper.evaluate_model(val_loader[0])
 
             epoch_result = {
+                'lr': optimizer.param_groups[0]['lr'],
                 'val_loss': epoch_val_result['mean_loss'],
                 'val_acc': epoch_val_result['mean_acc'],
                 'train_loss': torch.stack(train_losses).mean().item(),
                 'train_acc': torch.stack(train_accuracies).mean().item(),
             }
+
+            learning_rate_scheduler.step('val_acc')
 
             history.append(epoch_result)
             print(f"Epoch {epoch}:\n{epoch_result}")

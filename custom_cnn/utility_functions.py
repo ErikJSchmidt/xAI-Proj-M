@@ -1,4 +1,9 @@
 import torch
+
+
+"""
+Some functions that didn't belong to the other classes.
+"""
 def get_default_device():
     """Pick GPU if available, else CPU"""
     if torch.cuda.is_available():
