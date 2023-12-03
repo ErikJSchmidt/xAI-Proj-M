@@ -18,7 +18,13 @@ class ModelWrapper:
         return {'batch_loss': loss, 'batch_acc': acc}
 
     def validation_step(self, batch):
+        #print("\n\n\n------------batch --------------\n" + str(batch))
         self.model.eval()
+        #print("batch lenght" + str(len(batch)))
+        #images = batch[0]
+        #labels = batch[1]
+        #print(images)
+        #print(labels)
         images, labels = batch
         out = self.model(images)  # Generate predictions
         loss = F.cross_entropy(out, labels)  # Calculate loss
@@ -44,8 +50,8 @@ class ModelWrapper:
         batch_outputs = []
         for batch in data_loader:
             batch_output = self.validation_step(batch)
-            print(batch_output)
             batch_outputs.append(batch_output)
+
         # Return list of batch results
         batch_losses = [x['batch_loss'] for x in batch_outputs]
         epoch_loss = torch.stack(batch_losses).mean()  # Combine losses
@@ -61,6 +67,6 @@ class ModelWrapper:
 
     def load_model_weights(self, model_path):
         self.model.network.load_state_dict(
-            torch.load(model_path, map_location=torch.device(self.device)))
+            torch.load(model_path, map_location=torch.device(get_default_device())))
 
 

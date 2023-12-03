@@ -24,6 +24,7 @@ class ModelTrainer:
 
         device_aware_train_data_loader, device_aware_validation_data_loader, device_aware_test_data_loader = self.prepare_dataloaders()
 
+
         training_history = self.fit(
             epochs=self.trainer_config['epochs'],
             lr=self.trainer_config['learning_rate'],
@@ -31,10 +32,12 @@ class ModelTrainer:
             val_loader=device_aware_validation_data_loader,
             opt_func=opt_func)
 
+
+        print("Done with training. Now on to test set")
         final_test_result = self.model_wrapper.evaluate_model(device_aware_test_data_loader)
         final_test_result = {
-            'test_loss': final_test_result['loss'],
-            'test_Acc': final_test_result['acc']
+            'test_loss': final_test_result['mean_loss'],
+            'test_Acc': final_test_result['mean_acc']
         }
         print(f"Final test result:\n{final_test_result}")
 
@@ -81,14 +84,14 @@ class ModelTrainer:
             dataset=train_subset,
             batch_size=self.trainer_config['batch_size'],
             shuffle=True,
-            num_workers=4,
+            num_workers=2,
             pin_memory=False  # should be True if cuda is available
         )
         validation_data_loader = DataLoader(
             dataset=validation_subset,
             batch_size=self.trainer_config['batch_size'],
             shuffle=True,
-            num_workers=4,
+            num_workers=2,
             pin_memory=False  # should be True if cuda is available
         )
 
@@ -103,7 +106,7 @@ class ModelTrainer:
             dataset=test_dataset,
             batch_size=self.trainer_config['batch_size'],
             shuffle=True,
-            num_workers=4,
+            num_workers=2,
             pin_memory=False  # should be True if cuda is available
         )
 
