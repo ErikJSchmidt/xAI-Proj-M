@@ -165,7 +165,7 @@ class ModelTrainer:
                 'train_acc': torch.stack(train_accuracies).mean().item(),
             }
 
-            learning_rate_scheduler.step('val_acc')
+            learning_rate_scheduler.step(epoch_result['val_acc'])
 
             history.append(epoch_result)
             print(f"Epoch {epoch}:\n{epoch_result}")
