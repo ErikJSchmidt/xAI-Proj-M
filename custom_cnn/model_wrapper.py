@@ -49,6 +49,7 @@ class ModelWrapper:
 
         batch_outputs = []
         for batch in data_loader:
+            print(type(batch))
             batch_output = self.validation_step(batch)
             batch_outputs.append(batch_output)
 
