@@ -1,6 +1,11 @@
 # Custom CNNs
 As first step of the project we implement CNN models with pytorch and explore effects of different model shapes.
 
+## How to run
+- configure parameters in training_config.json as needed
+- run train.py with root dir path as param
+- result is stored in savedmodels folder
+
 ## Plain18Layer
 We follow descriptions of "Deep Residual Learning for Image Recognition" as closely to construct the plain 18 layer
 network they described.
@@ -34,3 +39,8 @@ of filters is doubled so as to preserve the time complexity per layer._
 #### Effect
 - After changing last layer, still no learning
 - Plain18Layer, the model improves on the baseline acc and learns throught the 20 epochs we tried
+
+
+#### Deprecated
+- train_custom_cnn.py
+- models.py
