@@ -31,7 +31,7 @@ class ModelTrainer:
 
         training_history = self.fit(
             epochs=self.trainer_config['epochs'],
-            lr=self.trainer_config['learning_rate'],
+            lr=self.trainer_config['learning_rate_start'],
             weight_decay=self.trainer_config['weight_decay'],
             momentum=self.trainer_config['momentum'],
             train_loader=device_aware_train_data_loader,
