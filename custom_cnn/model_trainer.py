@@ -25,6 +25,7 @@ class ModelTrainer:
 
         device_aware_train_data_loader, device_aware_validation_data_loader, device_aware_test_data_loader = self.prepare_dataloaders()
 
+        print("ToDo: Why is device_validation_data_loader wrapped in a tuple?")
         print(type(device_aware_train_data_loader))
         print(type(device_aware_validation_data_loader))
         print(type(device_aware_test_data_loader))
