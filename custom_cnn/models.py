@@ -1,5 +1,5 @@
 """
-This file contains custom CNN models/networks.
+This file contains custom CNN networks/networks.
 """
 
 import torch

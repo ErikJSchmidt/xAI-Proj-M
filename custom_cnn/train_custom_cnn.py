@@ -72,22 +72,22 @@ def load_dataset_and_train_cnn(data_dir, store_model_dir, model_type, save_model
     device_aware_validation_data_loader = DeviceDataLoader(validation_data_loader, device)
 
     # Actually train the model
-    match model_type:
-        case 'Cifar10CnnModel':
-            model = to_device(Cifar10CnnModel(), device)
-        case 'Plain18Layer':
-            model = to_device(Plain18Layer(), device)
-        case 'Uniform12Layer':
-            model = to_device(Uniform12Layer(), device)
-        case 'Uniform12LayerSkipped':
-            model = to_device(Uniform12LayerSkipped(), device)
-        case 'BackLoaded12Layer':
-            model = to_device(BackLoaded12Layer(), device)
-        case 'BackLoaded12LayerSkipped':
-            model = to_device(BackLoaded12LayerSkipped(), device)
-        case _:
-            print('Model not found.')
-            return
+
+    if model_type == 'Cifar10CnnModel':
+        model = to_device(Cifar10CnnModel(), device)
+    elif model_type == 'Plain18Layer':
+        model = to_device(Plain18Layer(), device)
+    elif model_type == 'Uniform12Layer':
+        model = to_device(Uniform12Layer(), device)
+    elif model_type == 'Uniform12LayerSkipped':
+        model = to_device(Uniform12LayerSkipped(), device)
+    elif model_type == 'BackLoaded12Layer':
+        model = to_device(BackLoaded12Layer(), device)
+    elif model_type == 'BackLoaded12LayerSkipped':
+        model = to_device(BackLoaded12LayerSkipped(), device)
+    else:
+        print('Model not found.')
+        return
 
     history = fit_dyn(0.02, min_epochs, lr, model, device_aware_train_data_loader, device_aware_validation_data_loader, opt_func)
     print(history)
@@ -110,15 +110,15 @@ if __name__ == "__main__":
     model_type = sys.argv[2]
     save_intention = sys.argv[3]
 
-    match save_intention:
-        case 'true':
-            save_model = True
-        case 'True':
-            save_model = True
-        case 'TRUE':
-            save_model = True
-        case _:
-            save_model = False
+
+    if save_intention == 'true':
+        save_model = True
+    elif save_intention == 'True':
+        save_model = True
+    elif save_intention == 'TRUE':
+        save_model = True
+    else:
+        save_model = False
 
     data_dir = dir + "/data"
     store_model_dir = dir + "/savedmodels"
