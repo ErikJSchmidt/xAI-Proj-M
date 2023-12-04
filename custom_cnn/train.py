@@ -6,6 +6,8 @@ import tarfile
 
 from custom_cnn.networks.model_plain_18_layer import Plain18Layer
 from custom_cnn.networks.model_plain_32_layer import Plain32Layer
+from custom_cnn.networks.model_skipped_18_layer import Skipped18Layer
+from custom_cnn.networks.model_skipped_32_layer import Skipped32Layer
 
 from custom_cnn.networks.model_backloaded_12_layer import BackLoaded12Layer
 from custom_cnn.networks.model_backloaded_12_layer_skipped import BackLoaded12LayerSkipped
@@ -73,6 +75,10 @@ def get_model(model_name):
         raw_model = Plain18Layer()
     elif model_name == "Plain32Layer":
         raw_model = Plain32Layer()
+    if model_name == "Skipped18Layer":
+        raw_model = Skipped18Layer()
+    elif model_name == "Skipped32Layer":
+        raw_model = Skipped32Layer()
     elif model_name == "Uniform12Layer":
         raw_model = Uniform12Layer()
     elif model_name == "Uniform12LayerSkipped":
