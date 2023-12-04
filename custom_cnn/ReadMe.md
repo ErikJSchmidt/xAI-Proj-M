@@ -38,7 +38,7 @@ of filters is doubled so as to preserve the time complexity per layer._
 
 #### Effect
 - After changing last layer, still no learning
-- Plain18Layer, the model improves on the baseline acc and learns throught the 20 epochs we tried
+- Plain18Layer, the model improves on the baseline acc and learns through the 20 epochs we tried
 
 
 #### Deprecated
