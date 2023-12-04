@@ -1,5 +1,9 @@
 import torch.nn as nn
 class Plain18Layer(nn.Module):
+    """"
+    Oriented at plain 18 layer CNN from ResNet paper as close as possible.
+    17 convolutional layers and one fully connected one => 18 Layer
+    """
     def __init__(self):
         super().__init__()
         self.network = nn.Sequential(
@@ -84,3 +88,4 @@ class Plain18Layer(nn.Module):
 
     def forward(self, xb):
         return self.network(xb)
+#%%
