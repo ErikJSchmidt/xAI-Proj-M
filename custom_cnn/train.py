@@ -112,7 +112,7 @@ def train_all(working_dir, trainer_config):
 
     for model in models:
         print('\n-----\n' + model + '\n-----\n')
-        trainer_config['model_name'] = model
+        absolute_trainer_config['model_name'] = model
         raw_model = get_model(model)
         model_wrapper = ModelWrapper(raw_model)
         model_trainer = ModelTrainer(
