@@ -55,7 +55,7 @@ class KNNLoss():
             distances.append(torch.mean(torch.tensor(local_distances)))
 
 
-        return torch.mean(torch.tensor(distances).pow(-1)).item()
+        return torch.mean(torch.tensor(distances).pow(-0.1)).item()
 
 
     def convergence_loss(self, forward_pass, labels):
