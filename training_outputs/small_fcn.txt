@@ -1,0 +1,1085 @@
+download cifar10 dataset to ./custom_cnn/data
+Downloading https://s3.amazonaws.com/fast-ai-imageclas/cifar10.tgz to ./custom_cnn/data/cifar10.tgz
+downloaded the compressed dataset
+start extracting the dataset
+start training function
+
+-----
+Uniform12Layer
+-----
+
+Load train data from ./custom_cnn/data/cifar10/train
+Load test data from ./custom_cnn/data/cifar10/test
+Detected device:  cuda
+ToDo: Why is device_validation_data_loader wrapped in a tuple?
+<class 'utility_functions.DeviceDataLoader'>
+<class 'tuple'>
+<class 'utility_functions.DeviceDataLoader'>
+Epoce: 0
+evaluate
+Epoch 0:
+{'lr': 0.1, 'val_loss': 2.0958316326141357, 'val_acc': 0.36081111431121826, 'train_loss': 2.073125123977661, 'train_acc': 0.3820401132106781}
+Epoce: 1
+evaluate
+Epoch 1:
+{'lr': 0.1, 'val_loss': 2.0427122116088867, 'val_acc': 0.4132467806339264, 'train_loss': 1.9086050987243652, 'train_acc': 0.5534454584121704}
+Epoce: 2
+evaluate
+Epoch 2:
+{'lr': 0.1, 'val_loss': 1.9091848134994507, 'val_acc': 0.5493795871734619, 'train_loss': 1.8267701864242554, 'train_acc': 0.6337846517562866}
+Epoce: 3
+evaluate
+Epoch 3:
+{'lr': 0.1, 'val_loss': 1.8920764923095703, 'val_acc': 0.5658892393112183, 'train_loss': 1.777462363243103, 'train_acc': 0.6839559674263}
+Epoce: 4
+evaluate
+Epoch 4:
+{'lr': 0.1, 'val_loss': 1.834967017173767, 'val_acc': 0.6253216862678528, 'train_loss': 1.750973105430603, 'train_acc': 0.710009753704071}
+Epoce: 5
+evaluate
+Epoch 5:
+{'lr': 0.1, 'val_loss': 1.7974557876586914, 'val_acc': 0.663166344165802, 'train_loss': 1.7236510515213013, 'train_acc': 0.7380459308624268}
+Epoce: 6
+evaluate
+Epoch 6:
+{'lr': 0.1, 'val_loss': 1.774355173110962, 'val_acc': 0.6861213445663452, 'train_loss': 1.7044095993041992, 'train_acc': 0.7579412460327148}
+Epoce: 7
+evaluate
+Epoch 7:
+{'lr': 0.1, 'val_loss': 1.8079376220703125, 'val_acc': 0.6509305834770203, 'train_loss': 1.682948112487793, 'train_acc': 0.7791628241539001}
+Epoce: 8
+evaluate
+Epoch 8:
+{'lr': 0.1, 'val_loss': 1.7189587354660034, 'val_acc': 0.7417968511581421, 'train_loss': 1.667236089706421, 'train_acc': 0.7945969104766846}
+Epoce: 9
+evaluate
+Epoch 9:
+{'lr': 0.1, 'val_loss': 1.7129290103912354, 'val_acc': 0.7524815797805786, 'train_loss': 1.6557881832122803, 'train_acc': 0.8070516586303711}
+Epoce: 10
+evaluate
+Epoch 10:
+{'lr': 0.1, 'val_loss': 1.7303135395050049, 'val_acc': 0.7318819165229797, 'train_loss': 1.6417344808578491, 'train_acc': 0.8209383487701416}
+Epoce: 11
+evaluate
+Epoch 11:
+{'lr': 0.1, 'val_loss': 1.7843105792999268, 'val_acc': 0.676596999168396, 'train_loss': 1.6318855285644531, 'train_acc': 0.8310626745223999}
+Epoce: 12
+evaluate
+Epoch 12:
+{'lr': 0.010000000000000002, 'val_loss': 1.6300048828125, 'val_acc': 0.8322380185127258, 'train_loss': 1.5929877758026123, 'train_acc': 0.8707990050315857}
+Epoce: 13
+evaluate
+Epoch 13:
+{'lr': 0.010000000000000002, 'val_loss': 1.6248149871826172, 'val_acc': 0.8365923762321472, 'train_loss': 1.579734444618225, 'train_acc': 0.8837162256240845}
+Epoce: 14
+evaluate
+Epoch 14:
+{'lr': 0.010000000000000002, 'val_loss': 1.6241722106933594, 'val_acc': 0.8398897051811218, 'train_loss': 1.573057770729065, 'train_acc': 0.8905140161514282}
+Epoce: 15
+evaluate
+Epoch 15:
+{'lr': 0.010000000000000002, 'val_loss': 1.623485803604126, 'val_acc': 0.8401998281478882, 'train_loss': 1.5673869848251343, 'train_acc': 0.8977494835853577}
+Epoce: 16
+evaluate
+Epoch 16:
+{'lr': 0.010000000000000002, 'val_loss': 1.6207220554351807, 'val_acc': 0.842693030834198, 'train_loss': 1.5630851984024048, 'train_acc': 0.9014337658882141}
+Epoce: 17
+evaluate
+Epoch 17:
+{'lr': 0.010000000000000002, 'val_loss': 1.6208288669586182, 'val_acc': 0.8416705131530762, 'train_loss': 1.558594822883606, 'train_acc': 0.906632661819458}
+Epoce: 18
+evaluate
+Epoch 18:
+{'lr': 0.010000000000000002, 'val_loss': 1.622462511062622, 'val_acc': 0.8395450711250305, 'train_loss': 1.555284857749939, 'train_acc': 0.9098384380340576}
+Epoce: 19
+evaluate
+Epoch 19:
+{'lr': 0.010000000000000002, 'val_loss': 1.6194241046905518, 'val_acc': 0.8433479070663452, 'train_loss': 1.5517027378082275, 'train_acc': 0.914445161819458}
+Epoce: 20
+evaluate
+Epoch 20:
+{'lr': 0.010000000000000002, 'val_loss': 1.6186103820800781, 'val_acc': 0.8434857130050659, 'train_loss': 1.5491995811462402, 'train_acc': 0.9163476824760437}
+Epoce: 21
+evaluate
+Epoch 21:
+{'lr': 0.010000000000000002, 'val_loss': 1.6170891523361206, 'val_acc': 0.8450368046760559, 'train_loss': 1.545859456062317, 'train_acc': 0.9195845127105713}
+Epoce: 22
+evaluate
+Epoch 22:
+{'lr': 0.010000000000000002, 'val_loss': 1.6178566217422485, 'val_acc': 0.8441635966300964, 'train_loss': 1.5430558919906616, 'train_acc': 0.922558605670929}
+Epoce: 23
+evaluate
+Epoch 23:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6169060468673706, 'val_acc': 0.8442785143852234, 'train_loss': 1.538636565208435, 'train_acc': 0.9270010590553284}
+Epoce: 24
+evaluate
+Epoch 24:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6186069250106812, 'val_acc': 0.8415096402168274, 'train_loss': 1.5375194549560547, 'train_acc': 0.9280850887298584}
+Epoce: 25
+evaluate
+Epoch 25:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6183007955551147, 'val_acc': 0.8434972763061523, 'train_loss': 1.537191390991211, 'train_acc': 0.9279012680053711}
+Epoce: 26
+evaluate
+Epoch 26:
+{'lr': 0.0010000000000000002, 'val_loss': 1.618496298789978, 'val_acc': 0.8423598408699036, 'train_loss': 1.5373286008834839, 'train_acc': 0.9277681112289429}
+Epoce: 27
+evaluate
+Epoch 27:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6165459156036377, 'val_acc': 0.8443014025688171, 'train_loss': 1.536240577697754, 'train_acc': 0.9292107224464417}
+Epoce: 28
+evaluate
+Epoch 28:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6164295673370361, 'val_acc': 0.8447955250740051, 'train_loss': 1.5364488363265991, 'train_acc': 0.9286878705024719}
+Epoce: 29
+evaluate
+Epoch 29:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6167526245117188, 'val_acc': 0.8454732894897461, 'train_loss': 1.5352815389633179, 'train_acc': 0.9299458861351013}
+Epoce: 30
+evaluate
+Epoch 30:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6166267395019531, 'val_acc': 0.8453354835510254, 'train_loss': 1.535452961921692, 'train_acc': 0.9301136136054993}
+Epoce: 31
+evaluate
+Epoch 31:
+{'lr': 0.0010000000000000002, 'val_loss': 1.616214394569397, 'val_acc': 0.8457490801811218, 'train_loss': 1.5348386764526367, 'train_acc': 0.9305797219276428}
+Epoce: 32
+evaluate
+Epoch 32:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6160463094711304, 'val_acc': 0.8444048762321472, 'train_loss': 1.534498929977417, 'train_acc': 0.9310972690582275}
+Epoce: 33
+evaluate
+Epoch 33:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6166099309921265, 'val_acc': 0.8442785143852234, 'train_loss': 1.5348504781723022, 'train_acc': 0.9308753609657288}
+Epoce: 34
+evaluate
+Epoch 34:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6153799295425415, 'val_acc': 0.8452665209770203, 'train_loss': 1.5332995653152466, 'train_acc': 0.9322354793548584}
+Epoce: 35
+evaluate
+Epoch 35:
+{'lr': 0.00010000000000000003, 'val_loss': 1.617296576499939, 'val_acc': 0.8434168100357056, 'train_loss': 1.5337527990341187, 'train_acc': 0.9318164587020874}
+Epoce: 36
+evaluate
+Epoch 36:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6159323453903198, 'val_acc': 0.8446002006530762, 'train_loss': 1.53426992893219, 'train_acc': 0.931008517742157}
+Epoce: 37
+evaluate
+Epoch 37:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6166828870773315, 'val_acc': 0.845427393913269, 'train_loss': 1.533891201019287, 'train_acc': 0.931424081325531}
+Epoce: 38
+evaluate
+Epoch 38:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6162124872207642, 'val_acc': 0.8451861143112183, 'train_loss': 1.5337311029434204, 'train_acc': 0.9320223331451416}
+Epoce: 39
+evaluate
+Epoch 39:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6176551580429077, 'val_acc': 0.8431755304336548, 'train_loss': 1.5338633060455322, 'train_acc': 0.9315412044525146}
+Done with training. Now on to test set
+Final test result:
+{'test_loss': 1.538640022277832, 'test_acc': 0.9251833558082581}
+
+-----
+Uniform12LayerSkipped
+-----
+
+Load train data from ./custom_cnn/data/cifar10/train
+Load test data from ./custom_cnn/data/cifar10/test
+Detected device:  cuda
+ToDo: Why is device_validation_data_loader wrapped in a tuple?
+<class 'utility_functions.DeviceDataLoader'>
+<class 'tuple'>
+<class 'utility_functions.DeviceDataLoader'>
+Epoce: 0
+evaluate
+Epoch 0:
+{'lr': 0.1, 'val_loss': 2.0774805545806885, 'val_acc': 0.37635570764541626, 'train_loss': 2.073456287384033, 'train_acc': 0.38201791048049927}
+Epoce: 1
+evaluate
+Epoch 1:
+{'lr': 0.1, 'val_loss': 2.021263837814331, 'val_acc': 0.4363166391849518, 'train_loss': 1.9374192953109741, 'train_acc': 0.5201091766357422}
+Epoce: 2
+evaluate
+Epoch 2:
+{'lr': 0.1, 'val_loss': 1.9239122867584229, 'val_acc': 0.5361443161964417, 'train_loss': 1.871358871459961, 'train_acc': 0.5882626175880432}
+Epoce: 3
+evaluate
+Epoch 3:
+{'lr': 0.1, 'val_loss': 1.9486210346221924, 'val_acc': 0.5102481842041016, 'train_loss': 1.8384292125701904, 'train_acc': 0.6208868622779846}
+Epoce: 4
+evaluate
+Epoch 4:
+{'lr': 0.1, 'val_loss': 1.8406826257705688, 'val_acc': 0.6180261969566345, 'train_loss': 1.8130407333374023, 'train_acc': 0.6467125415802002}
+Epoce: 5
+evaluate
+Epoch 5:
+{'lr': 0.1, 'val_loss': 1.8691034317016602, 'val_acc': 0.5889246463775635, 'train_loss': 1.7946500778198242, 'train_acc': 0.6653133630752563}
+Epoce: 6
+evaluate
+Epoch 6:
+{'lr': 0.1, 'val_loss': 1.8110522031784058, 'val_acc': 0.6486787796020508, 'train_loss': 1.7810603380203247, 'train_acc': 0.6794735193252563}
+Epoce: 7
+evaluate
+Epoch 7:
+{'lr': 0.1, 'val_loss': 1.8141940832138062, 'val_acc': 0.6453354954719543, 'train_loss': 1.7703105211257935, 'train_acc': 0.6897798180580139}
+Epoce: 8
+evaluate
+Epoch 8:
+{'lr': 0.1, 'val_loss': 1.8021265268325806, 'val_acc': 0.6559857130050659, 'train_loss': 1.7604743242263794, 'train_acc': 0.7005228996276855}
+Epoce: 9
+evaluate
+Epoch 9:
+{'lr': 0.1, 'val_loss': 1.8148144483566284, 'val_acc': 0.6453814506530762, 'train_loss': 1.7520006895065308, 'train_acc': 0.7090501189231873}
+Epoce: 10
+evaluate
+Epoch 10:
+{'lr': 0.1, 'val_loss': 1.8178703784942627, 'val_acc': 0.6413832902908325, 'train_loss': 1.7420557737350464, 'train_acc': 0.7185298204421997}
+Epoce: 11
+evaluate
+Epoch 11:
+{'lr': 0.1, 'val_loss': 1.7987407445907593, 'val_acc': 0.6616727709770203, 'train_loss': 1.7377897500991821, 'train_acc': 0.7227911949157715}
+Epoce: 12
+evaluate
+Epoch 12:
+{'lr': 0.010000000000000002, 'val_loss': 1.737192988395691, 'val_acc': 0.7235294580459595, 'train_loss': 1.7155193090438843, 'train_acc': 0.7449991106987}
+Epoce: 13
+evaluate
+Epoch 13:
+{'lr': 0.010000000000000002, 'val_loss': 1.7360260486602783, 'val_acc': 0.7244830131530762, 'train_loss': 1.7068815231323242, 'train_acc': 0.753875195980072}
+Epoce: 14
+evaluate
+Epoch 14:
+{'lr': 0.010000000000000002, 'val_loss': 1.7358661890029907, 'val_acc': 0.723908543586731, 'train_loss': 1.7030467987060547, 'train_acc': 0.7582466006278992}
+Epoce: 15
+evaluate
+Epoch 15:
+{'lr': 0.010000000000000002, 'val_loss': 1.736376404762268, 'val_acc': 0.7234489917755127, 'train_loss': 1.700342059135437, 'train_acc': 0.7608594298362732}
+Epoce: 16
+evaluate
+Epoch 16:
+{'lr': 0.010000000000000002, 'val_loss': 1.7352882623672485, 'val_acc': 0.7244715094566345, 'train_loss': 1.6978827714920044, 'train_acc': 0.7633869051933289}
+Epoce: 17
+evaluate
+Epoch 17:
+{'lr': 0.010000000000000002, 'val_loss': 1.7335981130599976, 'val_acc': 0.7252642512321472, 'train_loss': 1.6956787109375, 'train_acc': 0.7656658291816711}
+Epoce: 18
+evaluate
+Epoch 18:
+{'lr': 0.010000000000000002, 'val_loss': 1.7336372137069702, 'val_acc': 0.7254136204719543, 'train_loss': 1.6939964294433594, 'train_acc': 0.7674547433853149}
+Epoce: 19
+evaluate
+Epoch 19:
+{'lr': 0.010000000000000002, 'val_loss': 1.7199581861495972, 'val_acc': 0.7395794987678528, 'train_loss': 1.690451979637146, 'train_acc': 0.7702228426933289}
+Epoce: 20
+evaluate
+Epoch 20:
+{'lr': 0.010000000000000002, 'val_loss': 1.6997445821762085, 'val_acc': 0.7649471163749695, 'train_loss': 1.6677966117858887, 'train_acc': 0.7975559234619141}
+Epoce: 21
+evaluate
+Epoch 21:
+{'lr': 0.010000000000000002, 'val_loss': 1.694342017173767, 'val_acc': 0.769611656665802, 'train_loss': 1.6546865701675415, 'train_acc': 0.8118039965629578}
+Epoce: 22
+evaluate
+Epoch 22:
+{'lr': 0.010000000000000002, 'val_loss': 1.6922143697738647, 'val_acc': 0.7718060612678528, 'train_loss': 1.6465753316879272, 'train_acc': 0.8193572759628296}
+Epoce: 23
+evaluate
+Epoch 23:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6873115301132202, 'val_acc': 0.7744025588035583, 'train_loss': 1.6389425992965698, 'train_acc': 0.8281551599502563}
+Epoce: 24
+evaluate
+Epoch 24:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6880632638931274, 'val_acc': 0.7741268277168274, 'train_loss': 1.637509822845459, 'train_acc': 0.8295907378196716}
+Epoce: 25
+evaluate
+Epoch 25:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6887997388839722, 'val_acc': 0.7742417454719543, 'train_loss': 1.6365511417388916, 'train_acc': 0.8305291533470154}
+Epoce: 26
+evaluate
+Epoch 26:
+{'lr': 0.0010000000000000002, 'val_loss': 1.689073920249939, 'val_acc': 0.773161768913269, 'train_loss': 1.6357488632202148, 'train_acc': 0.8321555852890015}
+Epoce: 27
+evaluate
+Epoch 27:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6869076490402222, 'val_acc': 0.7756434082984924, 'train_loss': 1.634604811668396, 'train_acc': 0.8331667184829712}
+Epoce: 28
+evaluate
+Epoch 28:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6876131296157837, 'val_acc': 0.7729549407958984, 'train_loss': 1.6342569589614868, 'train_acc': 0.833220899105072}
+Epoce: 29
+evaluate
+Epoch 29:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6880406141281128, 'val_acc': 0.7739200592041016, 'train_loss': 1.6337058544158936, 'train_acc': 0.8334330916404724}
+Epoce: 30
+evaluate
+Epoch 30:
+{'lr': 0.0010000000000000002, 'val_loss': 1.686977744102478, 'val_acc': 0.7748850584030151, 'train_loss': 1.6329004764556885, 'train_acc': 0.8344087600708008}
+Epoce: 31
+evaluate
+Epoch 31:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6859149932861328, 'val_acc': 0.7766199707984924, 'train_loss': 1.6321390867233276, 'train_acc': 0.8352477550506592}
+Epoce: 32
+evaluate
+Epoch 32:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6864874362945557, 'val_acc': 0.7767692804336548, 'train_loss': 1.6312644481658936, 'train_acc': 0.8360271453857422}
+Epoce: 33
+evaluate
+Epoch 33:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6870075464248657, 'val_acc': 0.7742877006530762, 'train_loss': 1.631186604499817, 'train_acc': 0.8369877338409424}
+Epoce: 34
+evaluate
+Epoch 34:
+{'lr': 0.00010000000000000003, 'val_loss': 1.686245322227478, 'val_acc': 0.775275707244873, 'train_loss': 1.6298190355300903, 'train_acc': 0.8379509449005127}
+Epoce: 35
+evaluate
+Epoch 35:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6878976821899414, 'val_acc': 0.7741153836250305, 'train_loss': 1.6297712326049805, 'train_acc': 0.8378915190696716}
+Epoce: 36
+evaluate
+Epoch 36:
+{'lr': 0.00010000000000000003, 'val_loss': 1.685341715812683, 'val_acc': 0.7769186496734619, 'train_loss': 1.629783034324646, 'train_acc': 0.8375754952430725}
+Epoce: 37
+evaluate
+Epoch 37:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6850537061691284, 'val_acc': 0.7775275707244873, 'train_loss': 1.6298538446426392, 'train_acc': 0.8375816345214844}
+Epoce: 38
+evaluate
+Epoch 38:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6862064599990845, 'val_acc': 0.7750803828239441, 'train_loss': 1.6296942234039307, 'train_acc': 0.8380184173583984}
+Epoce: 39
+evaluate
+Epoch 39:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6876564025878906, 'val_acc': 0.7750229835510254, 'train_loss': 1.6297167539596558, 'train_acc': 0.8378116488456726}
+Done with training. Now on to test set
+Final test result:
+{'test_loss': 1.6330106258392334, 'test_acc': 0.8337452411651611}
+
+-----
+BackLoaded12Layer
+-----
+
+Load train data from ./custom_cnn/data/cifar10/train
+Load test data from ./custom_cnn/data/cifar10/test
+Detected device:  cuda
+ToDo: Why is device_validation_data_loader wrapped in a tuple?
+<class 'utility_functions.DeviceDataLoader'>
+<class 'tuple'>
+<class 'utility_functions.DeviceDataLoader'>
+Epoce: 0
+evaluate
+Epoch 0:
+{'lr': 0.1, 'val_loss': 2.0770673751831055, 'val_acc': 0.3798598349094391, 'train_loss': 2.072065830230713, 'train_acc': 0.381735622882843}
+Epoce: 1
+evaluate
+Epoch 1:
+{'lr': 0.1, 'val_loss': 2.037017822265625, 'val_acc': 0.4188074469566345, 'train_loss': 1.9256442785263062, 'train_acc': 0.5325168967247009}
+Epoce: 2
+evaluate
+Epoch 2:
+{'lr': 0.1, 'val_loss': 1.9346402883529663, 'val_acc': 0.5244715213775635, 'train_loss': 1.8623937368392944, 'train_acc': 0.5962588787078857}
+Epoce: 3
+evaluate
+Epoch 3:
+{'lr': 0.1, 'val_loss': 1.8802874088287354, 'val_acc': 0.5780905485153198, 'train_loss': 1.820822834968567, 'train_acc': 0.6393110752105713}
+Epoce: 4
+evaluate
+Epoch 4:
+{'lr': 0.1, 'val_loss': 1.835420846939087, 'val_acc': 0.6262752413749695, 'train_loss': 1.792914867401123, 'train_acc': 0.6668447852134705}
+Epoce: 5
+evaluate
+Epoch 5:
+{'lr': 0.1, 'val_loss': 1.8624029159545898, 'val_acc': 0.5958869457244873, 'train_loss': 1.7620551586151123, 'train_acc': 0.697928786277771}
+Epoce: 6
+evaluate
+Epoch 6:
+{'lr': 0.1, 'val_loss': 1.7936279773712158, 'val_acc': 0.6651769280433655, 'train_loss': 1.741052508354187, 'train_acc': 0.718618631362915}
+Epoce: 7
+evaluate
+Epoch 7:
+{'lr': 0.1, 'val_loss': 1.7539787292480469, 'val_acc': 0.7070657014846802, 'train_loss': 1.7209910154342651, 'train_acc': 0.7402805089950562}
+Epoce: 8
+evaluate
+Epoch 8:
+{'lr': 0.1, 'val_loss': 1.7689942121505737, 'val_acc': 0.691762387752533, 'train_loss': 1.7029367685317993, 'train_acc': 0.757568359375}
+Epoce: 9
+evaluate
+Epoch 9:
+{'lr': 0.1, 'val_loss': 1.7819719314575195, 'val_acc': 0.6779986619949341, 'train_loss': 1.6935030221939087, 'train_acc': 0.7677716612815857}
+Epoce: 10
+evaluate
+Epoch 10:
+{'lr': 0.1, 'val_loss': 1.715794563293457, 'val_acc': 0.7441061735153198, 'train_loss': 1.6783050298690796, 'train_acc': 0.7822443246841431}
+Epoce: 11
+evaluate
+Epoch 11:
+{'lr': 0.1, 'val_loss': 1.7164146900177002, 'val_acc': 0.7429917454719543, 'train_loss': 1.6709550619125366, 'train_acc': 0.789746105670929}
+Epoce: 12
+evaluate
+Epoch 12:
+{'lr': 0.010000000000000002, 'val_loss': 1.650312066078186, 'val_acc': 0.812385082244873, 'train_loss': 1.6299346685409546, 'train_acc': 0.8318235278129578}
+Epoce: 13
+evaluate
+Epoch 13:
+{'lr': 0.010000000000000002, 'val_loss': 1.650180459022522, 'val_acc': 0.8124885559082031, 'train_loss': 1.61441171169281, 'train_acc': 0.8483256697654724}
+Epoce: 14
+evaluate
+Epoch 14:
+{'lr': 0.010000000000000002, 'val_loss': 1.6492815017700195, 'val_acc': 0.8126033544540405, 'train_loss': 1.6086199283599854, 'train_acc': 0.853732168674469}
+Epoce: 15
+evaluate
+Epoch 15:
+{'lr': 0.010000000000000002, 'val_loss': 1.6503921747207642, 'val_acc': 0.8115924000740051, 'train_loss': 1.6030100584030151, 'train_acc': 0.8604474663734436}
+Epoce: 16
+evaluate
+Epoch 16:
+{'lr': 0.010000000000000002, 'val_loss': 1.6431041955947876, 'val_acc': 0.8175666928291321, 'train_loss': 1.5985522270202637, 'train_acc': 0.8646112084388733}
+Epoce: 17
+evaluate
+Epoch 17:
+{'lr': 0.010000000000000002, 'val_loss': 1.6441538333892822, 'val_acc': 0.816291332244873, 'train_loss': 1.5933023691177368, 'train_acc': 0.869841992855072}
+Epoce: 18
+evaluate
+Epoch 18:
+{'lr': 0.010000000000000002, 'val_loss': 1.6426374912261963, 'val_acc': 0.8194738626480103, 'train_loss': 1.5896714925765991, 'train_acc': 0.8747114539146423}
+Epoce: 19
+evaluate
+Epoch 19:
+{'lr': 0.010000000000000002, 'val_loss': 1.6418083906173706, 'val_acc': 0.8210592269897461, 'train_loss': 1.5867198705673218, 'train_acc': 0.8768172860145569}
+Epoce: 20
+evaluate
+Epoch 20:
+{'lr': 0.010000000000000002, 'val_loss': 1.639517068862915, 'val_acc': 0.8226907849311829, 'train_loss': 1.5837316513061523, 'train_acc': 0.8803107738494873}
+Epoce: 21
+evaluate
+Epoch 21:
+{'lr': 0.010000000000000002, 'val_loss': 1.6420612335205078, 'val_acc': 0.817417323589325, 'train_loss': 1.580067753791809, 'train_acc': 0.8837224841117859}
+Epoce: 22
+evaluate
+Epoch 22:
+{'lr': 0.010000000000000002, 'val_loss': 1.639329195022583, 'val_acc': 0.8217716217041016, 'train_loss': 1.5772216320037842, 'train_acc': 0.8869460821151733}
+Epoce: 23
+evaluate
+Epoch 23:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6372989416122437, 'val_acc': 0.823357105255127, 'train_loss': 1.5715529918670654, 'train_acc': 0.8925487995147705}
+Epoce: 24
+evaluate
+Epoch 24:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6374447345733643, 'val_acc': 0.8223689794540405, 'train_loss': 1.570627212524414, 'train_acc': 0.8937695026397705}
+Epoce: 25
+evaluate
+Epoch 25:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6380163431167603, 'val_acc': 0.8211971521377563, 'train_loss': 1.569631576538086, 'train_acc': 0.8941974639892578}
+Epoce: 26
+evaluate
+Epoch 26:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6382980346679688, 'val_acc': 0.8216107487678528, 'train_loss': 1.5694129467010498, 'train_acc': 0.8950035572052002}
+Epoce: 27
+evaluate
+Epoch 27:
+{'lr': 0.0010000000000000002, 'val_loss': 1.637001395225525, 'val_acc': 0.8244026303291321, 'train_loss': 1.5685476064682007, 'train_acc': 0.8957607746124268}
+Epoce: 28
+evaluate
+Epoch 28:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6355053186416626, 'val_acc': 0.8265854716300964, 'train_loss': 1.568433165550232, 'train_acc': 0.8954944610595703}
+Epoce: 29
+evaluate
+Epoch 29:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6358193159103394, 'val_acc': 0.8243566751480103, 'train_loss': 1.5680670738220215, 'train_acc': 0.8964613080024719}
+Epoce: 30
+evaluate
+Epoch 30:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6362686157226562, 'val_acc': 0.824379563331604, 'train_loss': 1.5675735473632812, 'train_acc': 0.8974663019180298}
+Epoce: 31
+evaluate
+Epoch 31:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6362842321395874, 'val_acc': 0.8245059847831726, 'train_loss': 1.566939353942871, 'train_acc': 0.8975399136543274}
+Epoce: 32
+evaluate
+Epoch 32:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6365617513656616, 'val_acc': 0.8250919580459595, 'train_loss': 1.566116213798523, 'train_acc': 0.8981232047080994}
+Epoce: 33
+evaluate
+Epoch 33:
+{'lr': 0.0010000000000000002, 'val_loss': 1.63621985912323, 'val_acc': 0.8235982656478882, 'train_loss': 1.5665889978408813, 'train_acc': 0.8984498977661133}
+Epoce: 34
+evaluate
+Epoch 34:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6356077194213867, 'val_acc': 0.8248276710510254, 'train_loss': 1.5656013488769531, 'train_acc': 0.8990802764892578}
+Epoce: 35
+evaluate
+Epoch 35:
+{'lr': 0.00010000000000000003, 'val_loss': 1.637541651725769, 'val_acc': 0.8232536315917969, 'train_loss': 1.5657541751861572, 'train_acc': 0.8986265659332275}
+Epoce: 36
+evaluate
+Epoch 36:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6365047693252563, 'val_acc': 0.8233801126480103, 'train_loss': 1.5664423704147339, 'train_acc': 0.8979776501655579}
+Epoce: 37
+evaluate
+Epoch 37:
+{'lr': 0.00010000000000000003, 'val_loss': 1.636557936668396, 'val_acc': 0.823276698589325, 'train_loss': 1.565972089767456, 'train_acc': 0.898776650428772}
+Epoce: 38
+evaluate
+Epoch 38:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6357206106185913, 'val_acc': 0.8242417573928833, 'train_loss': 1.5654319524765015, 'train_acc': 0.8991779088973999}
+Epoce: 39
+evaluate
+Epoch 39:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6373809576034546, 'val_acc': 0.824333667755127, 'train_loss': 1.5651493072509766, 'train_acc': 0.8995596170425415}
+Done with training. Now on to test set
+Final test result:
+{'test_loss': 1.5671781301498413, 'test_acc': 0.8964046835899353}
+
+-----
+BackLoaded12LayerSkipped
+-----
+
+Set up Modular Skip
+in: 3, out: 32, stride: (1, 1)
+Create skip conv
+Set up Modular Skip
+in: 32, out: 96, stride: (1, 1)
+Create skip conv
+Set up Modular Skip
+in: 96, out: 128, stride: (1, 1)
+Create skip conv
+Set up Modular Skip
+in: 128, out: 192, stride: (1, 1)
+Create skip conv
+Set up Modular Skip
+in: 192, out: 256, stride: (1, 1)
+Create skip conv
+Load train data from ./custom_cnn/data/cifar10/train
+Load test data from ./custom_cnn/data/cifar10/test
+Detected device:  cuda
+ToDo: Why is device_validation_data_loader wrapped in a tuple?
+<class 'utility_functions.DeviceDataLoader'>
+<class 'tuple'>
+<class 'utility_functions.DeviceDataLoader'>
+Epoce: 0
+evaluate
+Epoch 0:
+{'lr': 0.1, 'val_loss': 2.088315725326538, 'val_acc': 0.36752066016197205, 'train_loss': 2.0423500537872314, 'train_acc': 0.41680219769477844}
+Epoce: 1
+evaluate
+Epoch 1:
+{'lr': 0.1, 'val_loss': 1.9764333963394165, 'val_acc': 0.478515625, 'train_loss': 1.8979941606521606, 'train_acc': 0.5624724626541138}
+Epoce: 2
+evaluate
+Epoch 2:
+{'lr': 0.1, 'val_loss': 2.0265681743621826, 'val_acc': 0.4273667335510254, 'train_loss': 1.821830153465271, 'train_acc': 0.6422576308250427}
+Epoce: 3
+evaluate
+Epoch 3:
+{'lr': 0.1, 'val_loss': 1.820306420326233, 'val_acc': 0.6420611143112183, 'train_loss': 1.7745360136032104, 'train_acc': 0.6889817118644714}
+Epoce: 4
+evaluate
+Epoch 4:
+{'lr': 0.1, 'val_loss': 1.8506571054458618, 'val_acc': 0.6101102828979492, 'train_loss': 1.7364165782928467, 'train_acc': 0.7266495227813721}
+Epoce: 5
+evaluate
+Epoch 5:
+{'lr': 0.1, 'val_loss': 1.8850462436676025, 'val_acc': 0.5747817158699036, 'train_loss': 1.7065868377685547, 'train_acc': 0.7583922743797302}
+Epoce: 6
+evaluate
+Epoch 6:
+{'lr': 0.1, 'val_loss': 1.810764193534851, 'val_acc': 0.6484834551811218, 'train_loss': 1.6834994554519653, 'train_acc': 0.7802858352661133}
+Epoce: 7
+evaluate
+Epoch 7:
+{'lr': 0.1, 'val_loss': 1.7865736484527588, 'val_acc': 0.6753561496734619, 'train_loss': 1.6656066179275513, 'train_acc': 0.7986292243003845}
+Epoce: 8
+evaluate
+Epoch 8:
+{'lr': 0.1, 'val_loss': 1.7856725454330444, 'val_acc': 0.6774930953979492, 'train_loss': 1.643493890762329, 'train_acc': 0.8218110799789429}
+Epoce: 9
+evaluate
+Epoch 9:
+{'lr': 0.1, 'val_loss': 1.7469263076782227, 'val_acc': 0.7120519280433655, 'train_loss': 1.6309562921524048, 'train_acc': 0.8341655135154724}
+Epoce: 10
+evaluate
+Epoch 10:
+{'lr': 0.1, 'val_loss': 1.7146713733673096, 'val_acc': 0.7470473051071167, 'train_loss': 1.6150050163269043, 'train_acc': 0.8501837253570557}
+Epoce: 11
+evaluate
+Epoch 11:
+{'lr': 0.1, 'val_loss': 1.7270866632461548, 'val_acc': 0.7332720756530762, 'train_loss': 1.6041194200515747, 'train_acc': 0.8613130450248718}
+Epoce: 12
+evaluate
+Epoch 12:
+{'lr': 0.010000000000000002, 'val_loss': 1.6431013345718384, 'val_acc': 0.8227136731147766, 'train_loss': 1.562962293624878, 'train_acc': 0.9020872116088867}
+Epoce: 13
+evaluate
+Epoch 13:
+{'lr': 0.010000000000000002, 'val_loss': 1.6399554014205933, 'val_acc': 0.8234604597091675, 'train_loss': 1.5487685203552246, 'train_acc': 0.9164266586303711}
+Epoce: 14
+evaluate
+Epoch 14:
+{'lr': 0.010000000000000002, 'val_loss': 1.6382683515548706, 'val_acc': 0.8222082257270813, 'train_loss': 1.5413092374801636, 'train_acc': 0.9243119955062866}
+Epoce: 15
+evaluate
+Epoch 15:
+{'lr': 0.010000000000000002, 'val_loss': 1.6385055780410767, 'val_acc': 0.8284236788749695, 'train_loss': 1.5362070798873901, 'train_acc': 0.9293785095214844}
+Epoce: 16
+evaluate
+Epoch 16:
+{'lr': 0.010000000000000002, 'val_loss': 1.6384178400039673, 'val_acc': 0.8261833190917969, 'train_loss': 1.531791090965271, 'train_acc': 0.9339036345481873}
+Epoce: 17
+evaluate
+Epoch 17:
+{'lr': 0.010000000000000002, 'val_loss': 1.6390475034713745, 'val_acc': 0.8229894638061523, 'train_loss': 1.5275722742080688, 'train_acc': 0.9381951689720154}
+Epoce: 18
+evaluate
+Epoch 18:
+{'lr': 0.010000000000000002, 'val_loss': 1.6363216638565063, 'val_acc': 0.8288832902908325, 'train_loss': 1.5251173973083496, 'train_acc': 0.9402512907981873}
+Epoce: 19
+evaluate
+Epoch 19:
+{'lr': 0.010000000000000002, 'val_loss': 1.6371809244155884, 'val_acc': 0.8263098001480103, 'train_loss': 1.5223451852798462, 'train_acc': 0.9434881210327148}
+Epoce: 20
+evaluate
+Epoch 20:
+{'lr': 0.010000000000000002, 'val_loss': 1.6377620697021484, 'val_acc': 0.8259995579719543, 'train_loss': 1.5202640295028687, 'train_acc': 0.9451393485069275}
+Epoce: 21
+evaluate
+Epoch 21:
+{'lr': 0.010000000000000002, 'val_loss': 1.6383250951766968, 'val_acc': 0.8233340978622437, 'train_loss': 1.5177183151245117, 'train_acc': 0.9472824335098267}
+Epoce: 22
+evaluate
+Epoch 22:
+{'lr': 0.010000000000000002, 'val_loss': 1.6376030445098877, 'val_acc': 0.825310230255127, 'train_loss': 1.5158663988113403, 'train_acc': 0.9490012526512146}
+Epoce: 23
+evaluate
+Epoch 23:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6366264820098877, 'val_acc': 0.8270220756530762, 'train_loss': 1.5136566162109375, 'train_acc': 0.9509384036064148}
+Epoce: 24
+evaluate
+Epoch 24:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6383994817733765, 'val_acc': 0.8249080777168274, 'train_loss': 1.5135492086410522, 'train_acc': 0.9507928490638733}
+Epoce: 25
+evaluate
+Epoch 25:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6384061574935913, 'val_acc': 0.8245174288749695, 'train_loss': 1.5132853984832764, 'train_acc': 0.9507679343223572}
+Epoce: 26
+evaluate
+Epoch 26:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6390594244003296, 'val_acc': 0.824023425579071, 'train_loss': 1.513003945350647, 'train_acc': 0.9511070251464844}
+Epoce: 27
+evaluate
+Epoch 27:
+{'lr': 0.0010000000000000002, 'val_loss': 1.636739730834961, 'val_acc': 0.8272863626480103, 'train_loss': 1.512729287147522, 'train_acc': 0.9514293670654297}
+Epoce: 28
+evaluate
+Epoch 28:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6363054513931274, 'val_acc': 0.8272174000740051, 'train_loss': 1.5126311779022217, 'train_acc': 0.9515979886054993}
+Epoce: 29
+evaluate
+Epoch 29:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6369980573654175, 'val_acc': 0.826091468334198, 'train_loss': 1.512351632118225, 'train_acc': 0.9517152309417725}
+Epoce: 30
+evaluate
+Epoch 30:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6374181509017944, 'val_acc': 0.8251838684082031, 'train_loss': 1.5123316049575806, 'train_acc': 0.9517906308174133}
+Epoce: 31
+evaluate
+Epoch 31:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6361515522003174, 'val_acc': 0.8262178301811218, 'train_loss': 1.512160301208496, 'train_acc': 0.9520667791366577}
+Epoce: 32
+evaluate
+Epoch 32:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6370400190353394, 'val_acc': 0.8247932195663452, 'train_loss': 1.5116732120513916, 'train_acc': 0.952197253704071}
+Epoce: 33
+evaluate
+Epoch 33:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6371872425079346, 'val_acc': 0.8270220756530762, 'train_loss': 1.5119270086288452, 'train_acc': 0.9524449706077576}
+Epoce: 34
+evaluate
+Epoch 34:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6363022327423096, 'val_acc': 0.8277803659439087, 'train_loss': 1.5115623474121094, 'train_acc': 0.9524378180503845}
+Epoce: 35
+evaluate
+Epoch 35:
+{'lr': 0.00010000000000000003, 'val_loss': 1.637822151184082, 'val_acc': 0.8254020810127258, 'train_loss': 1.5115687847137451, 'train_acc': 0.9524093866348267}
+Epoce: 36
+evaluate
+Epoch 36:
+{'lr': 0.00010000000000000003, 'val_loss': 1.637319564819336, 'val_acc': 0.825160801410675, 'train_loss': 1.5117267370224, 'train_acc': 0.9524352550506592}
+Epoce: 37
+evaluate
+Epoch 37:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6380712985992432, 'val_acc': 0.8263557553291321, 'train_loss': 1.5116592645645142, 'train_acc': 0.9525150656700134}
+Epoce: 38
+evaluate
+Epoch 38:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6374558210372925, 'val_acc': 0.8259191513061523, 'train_loss': 1.5114126205444336, 'train_acc': 0.9526784420013428}
+Epoce: 39
+evaluate
+Epoch 39:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6374765634536743, 'val_acc': 0.8272863626480103, 'train_loss': 1.5116761922836304, 'train_acc': 0.9523908495903015}
+Done with training. Now on to test set
+Final test result:
+{'test_loss': 1.5227829217910767, 'test_acc': 0.9402702450752258}
+
+-----
+FrontLoaded12Layer
+-----
+
+Load train data from ./custom_cnn/data/cifar10/train
+Load test data from ./custom_cnn/data/cifar10/test
+Detected device:  cuda
+ToDo: Why is device_validation_data_loader wrapped in a tuple?
+<class 'utility_functions.DeviceDataLoader'>
+<class 'tuple'>
+<class 'utility_functions.DeviceDataLoader'>
+Epoce: 0
+evaluate
+Epoch 0:
+{'lr': 0.1, 'val_loss': 1.9750041961669922, 'val_acc': 0.49000459909439087, 'train_loss': 2.0533454418182373, 'train_acc': 0.4054119288921356}
+Epoce: 1
+evaluate
+Epoch 1:
+{'lr': 0.1, 'val_loss': 2.0001463890075684, 'val_acc': 0.45834097266197205, 'train_loss': 1.8679139614105225, 'train_acc': 0.5961505770683289}
+Epoce: 2
+evaluate
+Epoch 2:
+{'lr': 0.1, 'val_loss': 1.8809385299682617, 'val_acc': 0.5812385082244873, 'train_loss': 1.8019938468933105, 'train_acc': 0.6622949242591858}
+Epoce: 3
+evaluate
+Epoch 3:
+{'lr': 0.1, 'val_loss': 1.8525418043136597, 'val_acc': 0.6085478067398071, 'train_loss': 1.750023603439331, 'train_acc': 0.7151988744735718}
+Epoce: 4
+evaluate
+Epoch 4:
+{'lr': 0.1, 'val_loss': 1.816179633140564, 'val_acc': 0.6455193161964417, 'train_loss': 1.7211717367172241, 'train_acc': 0.7441219687461853}
+Epoce: 5
+evaluate
+Epoch 5:
+{'lr': 0.1, 'val_loss': 1.801857829093933, 'val_acc': 0.6595473289489746, 'train_loss': 1.6901339292526245, 'train_acc': 0.7748472690582275}
+Epoce: 6
+evaluate
+Epoch 6:
+{'lr': 0.1, 'val_loss': 1.72966468334198, 'val_acc': 0.7341452240943909, 'train_loss': 1.6701087951660156, 'train_acc': 0.7954279184341431}
+Epoce: 7
+evaluate
+Epoch 7:
+{'lr': 0.1, 'val_loss': 1.7039512395858765, 'val_acc': 0.7592486143112183, 'train_loss': 1.6551904678344727, 'train_acc': 0.8098472952842712}
+Epoce: 8
+evaluate
+Epoch 8:
+{'lr': 0.1, 'val_loss': 1.7406269311904907, 'val_acc': 0.7220932841300964, 'train_loss': 1.6361459493637085, 'train_acc': 0.8285990357398987}
+Epoce: 9
+evaluate
+Epoch 9:
+{'lr': 0.1, 'val_loss': 1.6829410791397095, 'val_acc': 0.7826401591300964, 'train_loss': 1.6218067407608032, 'train_acc': 0.8428027629852295}
+Epoce: 10
+evaluate
+Epoch 10:
+{'lr': 0.1, 'val_loss': 1.6732710599899292, 'val_acc': 0.7866268157958984, 'train_loss': 1.6131540536880493, 'train_acc': 0.8519113659858704}
+Epoce: 11
+evaluate
+Epoch 11:
+{'lr': 0.1, 'val_loss': 1.6628484725952148, 'val_acc': 0.8015165328979492, 'train_loss': 1.597800374031067, 'train_acc': 0.8677530288696289}
+Epoce: 12
+evaluate
+Epoch 12:
+{'lr': 0.1, 'val_loss': 1.7166194915771484, 'val_acc': 0.7460822463035583, 'train_loss': 1.5871646404266357, 'train_acc': 0.8780344128608704}
+Epoce: 13
+evaluate
+Epoch 13:
+{'lr': 0.010000000000000002, 'val_loss': 1.6078518629074097, 'val_acc': 0.8546185493469238, 'train_loss': 1.552888035774231, 'train_acc': 0.9123268723487854}
+Epoce: 14
+evaluate
+Epoch 14:
+{'lr': 0.010000000000000002, 'val_loss': 1.6065593957901, 'val_acc': 0.8568359613418579, 'train_loss': 1.5398802757263184, 'train_acc': 0.9255548715591431}
+Epoce: 15
+evaluate
+Epoch 15:
+{'lr': 0.010000000000000002, 'val_loss': 1.605759620666504, 'val_acc': 0.8565372228622437, 'train_loss': 1.5344339609146118, 'train_acc': 0.9314293265342712}
+Epoce: 16
+evaluate
+Epoch 16:
+{'lr': 0.010000000000000002, 'val_loss': 1.6071621179580688, 'val_acc': 0.8549173474311829, 'train_loss': 1.5308446884155273, 'train_acc': 0.9350070953369141}
+Epoce: 17
+evaluate
+Epoch 17:
+{'lr': 0.010000000000000002, 'val_loss': 1.603734016418457, 'val_acc': 0.8623276948928833, 'train_loss': 1.5270500183105469, 'train_acc': 0.9392480254173279}
+Epoce: 18
+evaluate
+Epoch 18:
+{'lr': 0.010000000000000002, 'val_loss': 1.6020746231079102, 'val_acc': 0.8612362146377563, 'train_loss': 1.5242382287979126, 'train_acc': 0.9421884417533875}
+Epoce: 19
+evaluate
+Epoch 19:
+{'lr': 0.010000000000000002, 'val_loss': 1.605261206626892, 'val_acc': 0.858318030834198, 'train_loss': 1.5214228630065918, 'train_acc': 0.9448481202125549}
+Epoce: 20
+evaluate
+Epoch 20:
+{'lr': 0.010000000000000002, 'val_loss': 1.6042829751968384, 'val_acc': 0.8577665090560913, 'train_loss': 1.5193636417388916, 'train_acc': 0.9466175436973572}
+Epoce: 21
+evaluate
+Epoch 21:
+{'lr': 0.010000000000000002, 'val_loss': 1.6030120849609375, 'val_acc': 0.8604779243469238, 'train_loss': 1.5166934728622437, 'train_acc': 0.9488992094993591}
+Epoce: 22
+evaluate
+Epoch 22:
+{'lr': 0.010000000000000002, 'val_loss': 1.6032257080078125, 'val_acc': 0.8594209551811218, 'train_loss': 1.5148611068725586, 'train_acc': 0.9507928490638733}
+Epoce: 23
+evaluate
+Epoch 23:
+{'lr': 0.010000000000000002, 'val_loss': 1.6025952100753784, 'val_acc': 0.8612591624259949, 'train_loss': 1.512779951095581, 'train_acc': 0.9527077078819275}
+Epoce: 24
+evaluate
+Epoch 24:
+{'lr': 0.0010000000000000002, 'val_loss': 1.603112816810608, 'val_acc': 0.8597770929336548, 'train_loss': 1.510541319847107, 'train_acc': 0.954420268535614}
+Epoce: 25
+evaluate
+Epoch 25:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6030696630477905, 'val_acc': 0.8610982894897461, 'train_loss': 1.5100016593933105, 'train_acc': 0.9547842144966125}
+Epoce: 26
+evaluate
+Epoch 26:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6025707721710205, 'val_acc': 0.8613970875740051, 'train_loss': 1.5098400115966797, 'train_acc': 0.9547656774520874}
+Epoce: 27
+evaluate
+Epoch 27:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6020103693008423, 'val_acc': 0.8606387972831726, 'train_loss': 1.509494423866272, 'train_acc': 0.9549422860145569}
+Epoce: 28
+evaluate
+Epoch 28:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6013435125350952, 'val_acc': 0.8599609136581421, 'train_loss': 1.5095977783203125, 'train_acc': 0.9550861120223999}
+Epoce: 29
+evaluate
+Epoch 29:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6021407842636108, 'val_acc': 0.8592486381530762, 'train_loss': 1.508954405784607, 'train_acc': 0.9554403424263}
+Epoce: 30
+evaluate
+Epoch 30:
+{'lr': 0.0010000000000000002, 'val_loss': 1.602293848991394, 'val_acc': 0.8604434728622437, 'train_loss': 1.5088976621627808, 'train_acc': 0.9556968808174133}
+Epoce: 31
+evaluate
+Epoch 31:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6010288000106812, 'val_acc': 0.8600643277168274, 'train_loss': 1.5088152885437012, 'train_acc': 0.9558238983154297}
+Epoce: 32
+evaluate
+Epoch 32:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6021782159805298, 'val_acc': 0.859375, 'train_loss': 1.5085439682006836, 'train_acc': 0.9559357166290283}
+Epoce: 33
+evaluate
+Epoch 33:
+{'lr': 0.0010000000000000002, 'val_loss': 1.601425051689148, 'val_acc': 0.8600872755050659, 'train_loss': 1.5088130235671997, 'train_acc': 0.9556347131729126}
+Epoce: 34
+evaluate
+Epoch 34:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6012945175170898, 'val_acc': 0.8603285551071167, 'train_loss': 1.5083332061767578, 'train_acc': 0.956027090549469}
+Epoce: 35
+evaluate
+Epoch 35:
+{'lr': 0.00010000000000000003, 'val_loss': 1.602120280265808, 'val_acc': 0.8606387972831726, 'train_loss': 1.508151650428772, 'train_acc': 0.9562810659408569}
+Epoce: 36
+evaluate
+Epoch 36:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6012834310531616, 'val_acc': 0.8608915209770203, 'train_loss': 1.5082603693008423, 'train_acc': 0.9562749266624451}
+Epoce: 37
+evaluate
+Epoch 37:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6018379926681519, 'val_acc': 0.8598116040229797, 'train_loss': 1.5082563161849976, 'train_acc': 0.956224262714386}
+Epoce: 38
+evaluate
+Epoch 38:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6010884046554565, 'val_acc': 0.8598690032958984, 'train_loss': 1.5081751346588135, 'train_acc': 0.9562234282493591}
+Epoce: 39
+evaluate
+Epoch 39:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6030515432357788, 'val_acc': 0.859340488910675, 'train_loss': 1.5079432725906372, 'train_acc': 0.9563947319984436}
+Done with training. Now on to test set
+Final test result:
+{'test_loss': 1.5160771608352661, 'test_acc': 0.9470264911651611}
+
+-----
+FrontLoaded12LayerSkipped
+-----
+
+Set up Modular Skip
+in: 3, out: 32, stride: (1, 1)
+Create skip conv
+Set up Modular Skip
+in: 32, out: 64, stride: (1, 1)
+Create skip conv
+Set up Modular Skip
+in: 64, out: 128, stride: (1, 1)
+Create skip conv
+Set up Modular Skip
+in: 128, out: 192, stride: (1, 1)
+Create skip conv
+Set up Modular Skip
+in: 192, out: 256, stride: (1, 1)
+Create skip conv
+Load train data from ./custom_cnn/data/cifar10/train
+Load test data from ./custom_cnn/data/cifar10/test
+Detected device:  cuda
+ToDo: Why is device_validation_data_loader wrapped in a tuple?
+<class 'utility_functions.DeviceDataLoader'>
+<class 'tuple'>
+<class 'utility_functions.DeviceDataLoader'>
+Epoce: 0
+evaluate
+Epoch 0:
+{'lr': 0.1, 'val_loss': 2.161841630935669, 'val_acc': 0.2929112911224365, 'train_loss': 2.045389413833618, 'train_acc': 0.41900479793548584}
+Epoce: 1
+evaluate
+Epoch 1:
+{'lr': 0.1, 'val_loss': 2.062950611114502, 'val_acc': 0.390705406665802, 'train_loss': 1.904919981956482, 'train_acc': 0.5588511824607849}
+Epoce: 2
+evaluate
+Epoch 2:
+{'lr': 0.1, 'val_loss': 1.8666956424713135, 'val_acc': 0.5996323823928833, 'train_loss': 1.8493257761001587, 'train_acc': 0.6159223914146423}
+Epoce: 3
+evaluate
+Epoch 3:
+{'lr': 0.1, 'val_loss': 1.8841930627822876, 'val_acc': 0.575976550579071, 'train_loss': 1.8033770322799683, 'train_acc': 0.663350522518158}
+Epoce: 4
+evaluate
+Epoch 4:
+{'lr': 0.1, 'val_loss': 1.870867133140564, 'val_acc': 0.5936236381530762, 'train_loss': 1.7545503377914429, 'train_acc': 0.7141477465629578}
+Epoce: 5
+evaluate
+Epoch 5:
+{'lr': 0.1, 'val_loss': 1.859684944152832, 'val_acc': 0.5994025468826294, 'train_loss': 1.7091634273529053, 'train_acc': 0.760084331035614}
+Epoce: 6
+evaluate
+Epoch 6:
+{'lr': 0.1, 'val_loss': 1.7865755558013916, 'val_acc': 0.6806410551071167, 'train_loss': 1.6782523393630981, 'train_acc': 0.7910254001617432}
+Epoce: 7
+evaluate
+Epoch 7:
+{'lr': 0.1, 'val_loss': 1.8275377750396729, 'val_acc': 0.6339384317398071, 'train_loss': 1.648774266242981, 'train_acc': 0.8207066059112549}
+Epoce: 8
+evaluate
+Epoch 8:
+{'lr': 0.1, 'val_loss': 1.796834945678711, 'val_acc': 0.665395200252533, 'train_loss': 1.6304550170898438, 'train_acc': 0.8387730121612549}
+Epoce: 9
+evaluate
+Epoch 9:
+{'lr': 0.1, 'val_loss': 1.7013733386993408, 'val_acc': 0.7616612911224365, 'train_loss': 1.6151546239852905, 'train_acc': 0.852438747882843}
+Epoce: 10
+evaluate
+Epoch 10:
+{'lr': 0.1, 'val_loss': 1.724670648574829, 'val_acc': 0.7373046875, 'train_loss': 1.5975757837295532, 'train_acc': 0.870823860168457}
+Epoce: 11
+evaluate
+Epoch 11:
+{'lr': 0.1, 'val_loss': 1.711558222770691, 'val_acc': 0.7481387853622437, 'train_loss': 1.5822778940200806, 'train_acc': 0.8866974115371704}
+Epoce: 12
+evaluate
+Epoch 12:
+{'lr': 0.010000000000000002, 'val_loss': 1.6180622577667236, 'val_acc': 0.848747730255127, 'train_loss': 1.5435683727264404, 'train_acc': 0.9242293834686279}
+Epoce: 13
+evaluate
+Epoch 13:
+{'lr': 0.010000000000000002, 'val_loss': 1.6156370639801025, 'val_acc': 0.8508846163749695, 'train_loss': 1.5306490659713745, 'train_acc': 0.9366042613983154}
+Epoce: 14
+evaluate
+Epoch 14:
+{'lr': 0.010000000000000002, 'val_loss': 1.6157127618789673, 'val_acc': 0.849333643913269, 'train_loss': 1.5246936082839966, 'train_acc': 0.9431009888648987}
+Epoce: 15
+evaluate
+Epoch 15:
+{'lr': 0.010000000000000002, 'val_loss': 1.6161472797393799, 'val_acc': 0.8494254946708679, 'train_loss': 1.5205307006835938, 'train_acc': 0.9468351006507874}
+Epoce: 16
+evaluate
+Epoch 16:
+{'lr': 0.010000000000000002, 'val_loss': 1.6165395975112915, 'val_acc': 0.8494254946708679, 'train_loss': 1.5167895555496216, 'train_acc': 0.9502414464950562}
+Epoce: 17
+evaluate
+Epoch 17:
+{'lr': 0.010000000000000002, 'val_loss': 1.6148275136947632, 'val_acc': 0.8497816920280457, 'train_loss': 1.5138473510742188, 'train_acc': 0.9531010985374451}
+Epoce: 18
+evaluate
+Epoch 18:
+{'lr': 0.010000000000000002, 'val_loss': 1.6143192052841187, 'val_acc': 0.8519531488418579, 'train_loss': 1.5115904808044434, 'train_acc': 0.9549405574798584}
+Epoce: 19
+evaluate
+Epoch 19:
+{'lr': 0.010000000000000002, 'val_loss': 1.6150522232055664, 'val_acc': 0.8488395810127258, 'train_loss': 1.509615182876587, 'train_acc': 0.956591784954071}
+Epoce: 20
+evaluate
+Epoch 20:
+{'lr': 0.010000000000000002, 'val_loss': 1.613495111465454, 'val_acc': 0.853791356086731, 'train_loss': 1.5077892541885376, 'train_acc': 0.9581170678138733}
+Epoce: 21
+evaluate
+Epoch 21:
+{'lr': 0.010000000000000002, 'val_loss': 1.6159394979476929, 'val_acc': 0.8481618165969849, 'train_loss': 1.506123661994934, 'train_acc': 0.959159255027771}
+Epoce: 22
+evaluate
+Epoch 22:
+{'lr': 0.010000000000000002, 'val_loss': 1.6139839887619019, 'val_acc': 0.8518727421760559, 'train_loss': 1.5049619674682617, 'train_acc': 0.9600319266319275}
+Epoce: 23
+evaluate
+Epoch 23:
+{'lr': 0.0010000000000000002, 'val_loss': 1.612952470779419, 'val_acc': 0.8519991040229797, 'train_loss': 1.5033453702926636, 'train_acc': 0.9610049724578857}
+Epoce: 24
+evaluate
+Epoch 24:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6144112348556519, 'val_acc': 0.850425124168396, 'train_loss': 1.5030779838562012, 'train_acc': 0.9611860513687134}
+Epoce: 25
+evaluate
+Epoch 25:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6152114868164062, 'val_acc': 0.8520565032958984, 'train_loss': 1.5030574798583984, 'train_acc': 0.9612712860107422}
+Epoce: 26
+evaluate
+Epoch 26:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6147340536117554, 'val_acc': 0.8520105481147766, 'train_loss': 1.5030126571655273, 'train_acc': 0.9614018797874451}
+Epoce: 27
+evaluate
+Epoch 27:
+{'lr': 0.0010000000000000002, 'val_loss': 1.613830804824829, 'val_acc': 0.8521139025688171, 'train_loss': 1.5026973485946655, 'train_acc': 0.9614737033843994}
+Epoce: 28
+evaluate
+Epoch 28:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6127166748046875, 'val_acc': 0.8527113795280457, 'train_loss': 1.5027326345443726, 'train_acc': 0.9615598320960999}
+Epoce: 29
+evaluate
+Epoch 29:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6128883361816406, 'val_acc': 0.8546645045280457, 'train_loss': 1.502456545829773, 'train_acc': 0.9618545770645142}
+Epoce: 30
+evaluate
+Epoch 30:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6131019592285156, 'val_acc': 0.8523207902908325, 'train_loss': 1.5024032592773438, 'train_acc': 0.9617658257484436}
+Epoce: 31
+evaluate
+Epoch 31:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6128259897232056, 'val_acc': 0.853710949420929, 'train_loss': 1.5022497177124023, 'train_acc': 0.9620507955551147}
+Epoce: 32
+evaluate
+Epoch 32:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6129734516143799, 'val_acc': 0.8529756665229797, 'train_loss': 1.502036690711975, 'train_acc': 0.9621972441673279}
+Epoce: 33
+evaluate
+Epoch 33:
+{'lr': 0.0010000000000000002, 'val_loss': 1.6129684448242188, 'val_acc': 0.8537338972091675, 'train_loss': 1.5021300315856934, 'train_acc': 0.9622390270233154}
+Epoce: 34
+evaluate
+Epoch 34:
+{'lr': 0.00010000000000000003, 'val_loss': 1.612334132194519, 'val_acc': 0.8546645045280457, 'train_loss': 1.5018495321273804, 'train_acc': 0.9622603058815002}
+Epoce: 35
+evaluate
+Epoch 35:
+{'lr': 0.00010000000000000003, 'val_loss': 1.613737940788269, 'val_acc': 0.853481113910675, 'train_loss': 1.5018316507339478, 'train_acc': 0.9622603058815002}
+Epoce: 36
+evaluate
+Epoch 36:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6121940612792969, 'val_acc': 0.8547908663749695, 'train_loss': 1.501906394958496, 'train_acc': 0.9622735977172852}
+Epoce: 37
+evaluate
+Epoch 37:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6133838891983032, 'val_acc': 0.8543658256530762, 'train_loss': 1.5019649267196655, 'train_acc': 0.9622735977172852}
+Epoce: 38
+evaluate
+Epoch 38:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6119136810302734, 'val_acc': 0.8551815152168274, 'train_loss': 1.5018073320388794, 'train_acc': 0.9622442722320557}
+Epoce: 39
+evaluate
+Epoch 39:
+{'lr': 0.00010000000000000003, 'val_loss': 1.6141226291656494, 'val_acc': 0.852699875831604, 'train_loss': 1.5018210411071777, 'train_acc': 0.9622957706451416}
+Done with training. Now on to test set
+Final test result:
+{'test_loss': 1.5124050378799438, 'test_acc': 0.9515067338943481}
