@@ -18,6 +18,8 @@ from networks.model_frontloaded_12_layer_skipped import FrontLoaded12LayerSkippe
 
 from model_wrapper import ModelWrapper
 from model_trainer import ModelTrainer
+from knn_loss_model_wrapper import KnnLossModelWrapper
+from knn_loss_model_trainer import KnnLossModelTrainer
 
 
 # ---- Downloading Cifar10 ----
@@ -58,16 +60,25 @@ def train(working_dir, trainer_config):
         # Momentum of SGD
         'momentum': trainer_config['momentum'],
         # Parameter to steer how long a plateau in validation loss needs to be before learning rate is reduced to 1/10
-        'lr_reduce_patience': trainer_config['lr_reduce_patience']
+        'lr_reduce_patience': trainer_config['lr_reduce_patience'],
+        # Use only cross entropy (false) or also use our knn loss (true)
+        'use_knn_loss': trainer_config['use_knn_loss']
     }
 
     raw_model = get_model(trainer_config['model_name'])
 
-    model_wrapper = ModelWrapper(raw_model)
-    model_trainer = ModelTrainer(
-        model_wrapper=model_wrapper,
-        absolute_trainer_config=absolute_trainer_config
-    )
+    if absolute_trainer_config['use_knn_loss']:
+        model_wrapper = KnnLossModelWrapper(raw_model)
+        model_trainer = KnnLossModelTrainer(
+            model_wrapper=model_wrapper,
+            absolute_trainer_config=absolute_trainer_config
+        )
+    else:
+        model_wrapper = ModelWrapper(raw_model)
+        model_trainer = ModelTrainer(
+            model_wrapper=model_wrapper,
+            absolute_trainer_config=absolute_trainer_config
+        )
 
     model_trainer.train_model()
 
@@ -164,5 +175,5 @@ if __name__ == "__main__":
     download_and_unpack_dataset(root_dir + config['dataset_root_dir_rel_path'])
 
     print("start training function")
-    # train(root_dir, config)
-    train_all(root_dir, config)
+    train(root_dir, config)
+    #train_all(root_dir, config)
