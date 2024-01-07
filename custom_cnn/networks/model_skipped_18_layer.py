@@ -123,3 +123,5 @@ class Skipped18Layer(nn.Module):
 
     def forward(self, xb):
         return self.network(xb)
+
+    
