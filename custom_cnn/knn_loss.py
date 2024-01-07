@@ -18,7 +18,8 @@ class KNNLoss():
     def divergence_loss(self, forward_pass, labels):
         '''
         Divergence Loss function, with the aim of maximizing the difference between the class's centroids.
-        This loss function assumes, that a randomly initialized network will randomly embed inputs, such that the centroid of each class is roughly the same.
+        This loss function assumes, that a randomly initialized network will randomly embed inputs, such that the
+        centroid of each class is roughly the same.
 
         PARAMETERS
         ----------
@@ -60,7 +61,9 @@ class KNNLoss():
 
     def convergence_loss(self, forward_pass, labels):
         '''
-        Convergence Loss function, with the aim of minimizing the average (summed?) difference between the instances and corresponding class centroid. This function assumes that the object's centroids attribute contains embeddings that are sufficiently different from each other.
+        Convergence Loss function, with the aim of minimizing the average (summed?) difference between the instances and
+        corresponding class centroid. This function assumes that the object's centroids attribute contains embeddings
+        that are sufficiently different from each other.
         
         PARAMETERS
         ----------
