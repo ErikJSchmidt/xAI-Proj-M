@@ -154,6 +154,10 @@ class KnnLossModelTrainer:
             # Depending on epoch use different loss function
             if epoch < epochs *2/3:
                 loss_func = F.cross_entropy
+            elif epoch -1 < epochs *2/3 and epoch >= epochs*2/3:
+                loss_func = self.knn_loss.combined_loss
+                # Reset the learning rate scheduler as we swapped the loss function
+                learning_rate_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=self.trainer_config['lr_reduce_patience'])
             else:
                 loss_func = self.knn_loss.combined_loss
 
