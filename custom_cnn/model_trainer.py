@@ -84,6 +84,7 @@ class ModelTrainer:
         # Split train dataset for training and validation
         validation_dataset_size = 5000
         train_dataset_size = len(train_dataset) - validation_dataset_size
+        # ToDo Stratify
         train_subset, validation_subset = random_split(train_dataset, [train_dataset_size, validation_dataset_size])
 
         # Create DataLoaders

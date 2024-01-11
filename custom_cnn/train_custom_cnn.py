@@ -9,8 +9,7 @@ from torchvision.transforms import ToTensor
 from torch.utils.data import random_split
 from torch.utils.data.dataloader import DataLoader
 from models import Uniform12Layer, Uniform12LayerSkipped, Cifar10CnnModel, Plain18Layer, BackLoaded12Layer, BackLoaded12LayerSkipped, accuracy, evaluate, fit_dyn, get_default_device, DeviceDataLoader, to_device
-
-
+from deprecated import deprecated
 
 # ---- Downloading Cifar10 ----
 def download_and_unpack_dataset(data_dir):
@@ -26,7 +25,9 @@ def download_and_unpack_dataset(data_dir):
     with tarfile.open(data_dir + '/cifar10.tgz', 'r:gz') as tar:
         tar.extractall(path='./data')
 
+
 # ---- Training the cnn ----
+@deprecated(reason="The train.py script is a the new version of this script")
 def load_dataset_and_train_cnn(data_dir, store_model_dir, model_type, save_model):
     # Setting parameters for training
     train_dataset_root_path = data_dir + "/cifar10/train"
