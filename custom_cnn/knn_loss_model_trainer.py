@@ -152,25 +152,35 @@ class KnnLossModelTrainer:
         for epoch in range(epochs):
             print("Epoche:", epoch)
             # Depending on epoch use different loss function
-            if epoch < epochs *2/3:
-                loss_func = F.cross_entropy
-            elif epoch -1 < epochs *2/3 and epoch >= epochs*2/3:
-                loss_func = self.knn_loss.combined_loss
-                # Reset the learning rate scheduler as we swapped the loss function
-                learning_rate_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=self.trainer_config['lr_reduce_patience'])
-            else:
-                loss_func = self.knn_loss.combined_loss
+            # if epoch < epochs *2/3:
+            #     loss_func = F.cross_entropy
+            # elif epoch -1 < epochs *2/3 and epoch >= epochs*2/3:
+            #     loss_func = self.knn_loss.combined_loss
+            #     # Reset the learning rate scheduler as we swapped the loss function
+            #     learning_rate_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=self.trainer_config['lr_reduce_patience'])
+            # else:
+            #     loss_func = self.knn_loss.combined_loss
 
+            # TODO
+            if epoch <= 2:
+                # loss_func = F.cross_entropy
+                loss_func = self.knn_loss.divergence_loss
+            else:
+                loss_func = self.knn_loss.convergence_loss
 
 
             # Training Phase
             train_losses = []
             train_accuracies = []
-            for batch in train_loader:
+            for i, batch in enumerate(train_loader):
                 batch_train_result = self.model_wrapper.training_step(batch, loss_func=loss_func)
                 loss = batch_train_result['batch_loss']
                 train_losses.append(loss)
                 train_accuracies.append(batch_train_result['batch_acc'])
+                # print(type(loss))
+                # print(loss.shape)
+                # print(loss)
+                # print(i)
                 loss.backward()
                 optimizer.step()
                 optimizer.zero_grad()

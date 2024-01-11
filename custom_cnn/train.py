@@ -17,6 +17,8 @@ from networks.model_uniform_12_layer_skipped import Uniform12LayerSkipped
 from networks.model_frontloaded_12_layer import FrontLoaded12Layer
 from networks.model_frontloaded_12_layer_skipped import FrontLoaded12LayerSkipped
 
+from networks.knn_loss_model import KNNLossModel
+
 from model_wrapper import ModelWrapper
 from model_trainer import ModelTrainer
 from knn_loss_model_wrapper import KnnLossModelWrapper
@@ -157,6 +159,8 @@ def get_model(model_name):
         raw_model = FrontLoaded12Layer()
     elif model_name == 'FrontLoaded12LayerSkipped':
         raw_model = FrontLoaded12LayerSkipped()
+    elif model_name == 'KNNLossModel':
+        raw_model = KNNLossModel()
     else:
         print(f"Model name {model_name} not valid.")
     return raw_model

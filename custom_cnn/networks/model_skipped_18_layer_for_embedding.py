@@ -128,4 +128,5 @@ class Skipped18LayerForEmbbeding(nn.Module):
 
     def forward(self, xb):
         embedding = self.network(xb)
-        return self.fc(embedding)
+        # return self.fc(embedding)
+        return embedding
