@@ -98,7 +98,7 @@ def train(working_dir, trainer_config):
             print(f"Load model weights from {model_folder_path}")
             raw_model = get_model(trainer_config['model_name'])
             model_wrapper = KnnLossModelWrapper(raw_model)
-            model_wrapper.load_model_weights(model_folder_path + "\model_state_dict")
+            model_wrapper.load_model_weights(model_folder_path + "/model_state_dict")
             model_trainer = KnnLossModelTrainer(
                 model_wrapper=model_wrapper,
                 absolute_trainer_config=phase_trainer_config
