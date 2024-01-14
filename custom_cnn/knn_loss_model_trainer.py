@@ -12,6 +12,7 @@ from torch.utils.data.dataloader import DataLoader
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from utility_functions import DeviceDataLoader, get_default_device
 import torch.nn.functional as F
+from torch import nn
 
 
 class KnnLossModelTrainer:
@@ -77,6 +78,8 @@ class KnnLossModelTrainer:
         self.model_wrapper.save_model(
             dir_path=model_subfolder_path
         )
+
+        return model_subfolder_path
 
     def prepare_dataloaders(self):
         print("Load train data from " + self.trainer_config['train_dataset_dir'])
@@ -147,27 +150,17 @@ class KnnLossModelTrainer:
 
         learning_rate_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=self.trainer_config['lr_reduce_patience'])
 
+        loss_function_key = self.trainer_config["loss_function"]
+        loss_func = self.get_loss_function_for_key(loss_function_key)
+        print(f"Use loss function: {loss_function_key}")
 
+        if loss_function_key in ["divergence_loss"]:
+            print("Remove fc layer before training")
+            removed_fc = self.model_wrapper.model.fc
+            self.model_wrapper.model.fc = Identity()
 
         for epoch in range(epochs):
             print("Epoche:", epoch)
-            # Depending on epoch use different loss function
-            # if epoch < epochs *2/3:
-            #     loss_func = F.cross_entropy
-            # elif epoch -1 < epochs *2/3 and epoch >= epochs*2/3:
-            #     loss_func = self.knn_loss.combined_loss
-            #     # Reset the learning rate scheduler as we swapped the loss function
-            #     learning_rate_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=self.trainer_config['lr_reduce_patience'])
-            # else:
-            #     loss_func = self.knn_loss.combined_loss
-
-            # TODO
-            if epoch <= 2:
-                # loss_func = F.cross_entropy
-                loss_func = self.knn_loss.divergence_loss
-            else:
-                loss_func = self.knn_loss.convergence_loss
-
 
             # Training Phase
             train_losses = []
@@ -200,4 +193,25 @@ class KnnLossModelTrainer:
 
             history.append(epoch_result)
             print(f"Epoch {epoch}:\n{epoch_result}")
+
+        if loss_function_key in ["divergence_loss"]:
+            print("Add fc that was removed before back to model")
+            self.model_wrapper.model.fc = removed_fc
+
         return history
+
+    def get_loss_function_for_key(self, key):
+        if key == "divergence_loss":
+            return self.knn_loss.divergence_loss
+        elif key == "cross_entropy":
+            return F.cross_entropy
+
+
+
+
+class Identity(nn.Module):
+    def __init__(self):
+        super(Identity, self).__init__()
+
+    def forward(self, x):
+        return x

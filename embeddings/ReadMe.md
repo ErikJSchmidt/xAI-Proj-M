@@ -22,5 +22,10 @@ Epochs: 40
 
 => We guess that the pretrained model was trained on ImageNet. Our model was trained on
 
-###
-L()
+### Skipped18LayerForEmbedding (divergence loss)
+- Remove fc layer and train with divergence loss to optimize distance between class centroid embedding
+- Add untrained fc layer
+- Safe state dict
+- Load state dict and train with cross entropy
+- Assess knn classification accuracy
+
