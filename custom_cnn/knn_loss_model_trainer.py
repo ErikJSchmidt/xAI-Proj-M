@@ -152,7 +152,7 @@ class KnnLossModelTrainer:
 
         loss_function_key = self.trainer_config["loss_function"]
         loss_func = self.get_loss_function_for_key(loss_function_key)
-        print(f"Use loss function: {loss_function_key}")
+        print(f"Use loss function: {loss_function_key}, {str(loss_func)}")
 
         if loss_function_key in ["divergence_loss"]:
             print("Remove fc layer before training")
@@ -203,7 +203,7 @@ class KnnLossModelTrainer:
     def get_loss_function_for_key(self, key):
         if key == "divergence_loss":
             return self.knn_loss.divergence_loss
-        elif key == "cross_entropy":
+        elif key == "cross_entropy_loss":
             return F.cross_entropy
 
 
