@@ -171,6 +171,7 @@ class LowDimModelTrainer:
             print("Epoche:", epoch)
 
             # Training Phase
+            print("training")
             # the embeddings the model returned for this epoch
             train_embedding_batches = []
             # the output prediction the model returned for all embeddings in the epoch
@@ -200,12 +201,15 @@ class LowDimModelTrainer:
 
 
             # Validation phase
-            print("evaluate")
+            print("validation")
             val_embedding_batches = []
             val_prediction_batches = []
             val_label_batches = []
             val_losses = []
+            print(f"val loader: {str(val_loader)}")
+            print(f"val loader first element: {val_loader[0]}")
             for i, batch in enumerate(val_loader[0]):
+                print(f"Len of batch in validation: {len(batch)}")
                 batch_images, batch_labels = batch
                 batch_embeddings, batch_out = self.model_wrapper.validation_step(batch_images)
                 if loss_function_key == "divergence_loss":
