@@ -51,12 +51,9 @@ class LowDimModelTrainer:
 
 
         print("Done with training. Now on to test set")
-        final_test_result = self.model_wrapper.evaluate_model(device_aware_test_data_loader, F.cross_entropy)
-        final_test_result = {
-            'test_loss': final_test_result['mean_loss'],
-            'test_acc': final_test_result['mean_acc']
-        }
-        print(f"Final test result:\n{final_test_result}")
+        test_set_result = self.evaluate_model(device_aware_test_data_loader)
+
+        print(f"Done processing the test set")
 
         # Create subfolder for model and results of this training run
         if not os.path.exists(self.trainer_config['store_model_dir']):
@@ -71,7 +68,7 @@ class LowDimModelTrainer:
         training_run = {
             'training_config': self.trainer_config,
             'training_history': training_history,
-            'final_test_result': final_test_result
+            'final_test_set_results': test_set_result
         }
 
         training_run_file = open(model_subfolder_path + "/training_run.json", "w+")
@@ -225,13 +222,13 @@ class LowDimModelTrainer:
 
             epoch_result = {
                 'lr': optimizer.param_groups[0]['lr'],
-                'train_logs':{
+                'train_results':{
                     'batch_losses': train_losses,
                     'embeddings': train_embedding_batches,
                     'predictions': train_prediction_batches,
                     'labels': train_label_batches
                 },
-                'val_logs':{
+                'val_results':{
                     'batch_losses': val_losses,
                     'embeddings': val_embedding_batches,
                     'predictions': val_prediction_batches,
@@ -246,6 +243,28 @@ class LowDimModelTrainer:
             print(f"Epoch {epoch}:\navg loss: {avg_train_loss_of_epoch}")
 
         return history
+
+    def evaluate_model(self, test_data_loader):
+        """
+        :param test_data_loader: torch.utils.data.dataloader.DataLoader that provides the samples to evaluate on
+        :return: all embeddings, prediction and true labels that were fed through the model from the test_data_loader
+        """
+        test_embedding_batches = []
+        test_prediction_batches = []
+        test_label_batches = []
+        for batch in test_data_loader:
+            batch_images, batch_labels = batch
+            batch_embeddings, batch_out = self.model_wrapper.validation_step(batch_images)
+            test_embedding_batches.append(batch_embeddings)
+            test_prediction_batches.append(batch_out)
+            test_label_batches.append(batch_labels)
+
+        test_result = {
+            'embeddings': test_embedding_batches,
+            'predictions': test_prediction_batches,
+            'labels': test_label_batches
+        }
+        return test_result
 
     def get_loss_function_for_key(self, key):
         if key == "divergence_loss":
