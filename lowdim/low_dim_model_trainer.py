@@ -206,21 +206,21 @@ class LowDimModelTrainer:
             val_prediction_batches = []
             val_label_batches = []
             val_losses = []
-            for i, batch in enumerate(val_loader[0]):
-                print(f"Len of batch in validation: {len(batch)}")
-                batch_images, batch_labels = batch
-                batch_embeddings, batch_out = self.model_wrapper.validation_step(batch_images)
-                if loss_function_key == "divergence_loss":
-                    # The divergence loss is plugged directly onto the final embedding layer of the CNN and ignores the fc layer
-                    batch_loss = loss_func(batch_embeddings, batch_labels)
-                elif loss_function_key == "cross_entropy":
-                    # The cross entropy loss is plugged onto the prob. dist. output of the fc layer
-                    batch_loss = loss_func(batch_out, batch_labels)
+            with torch.no_grad():
+                for i, batch in enumerate(val_loader[0]):
+                    batch_images, batch_labels = batch
+                    batch_embeddings, batch_out = self.model_wrapper.validation_step(batch_images)
+                    if loss_function_key == "divergence_loss":
+                        # The divergence loss is plugged directly onto the final embedding layer of the CNN and ignores the fc layer
+                        batch_loss = loss_func(batch_embeddings, batch_labels)
+                    elif loss_function_key == "cross_entropy":
+                        # The cross entropy loss is plugged onto the prob. dist. output of the fc layer
+                        batch_loss = loss_func(batch_out, batch_labels)
 
-                val_embedding_batches.append(batch_embeddings)
-                val_prediction_batches.append(batch_out)
-                val_label_batches.append(batch_labels)
-                val_losses.append(batch_loss)
+                    val_embedding_batches.append(batch_embeddings)
+                    val_prediction_batches.append(batch_out)
+                    val_label_batches.append(batch_labels)
+                    val_losses.append(batch_loss)
 
             epoch_result = {
                 'lr': optimizer.param_groups[0]['lr'],
@@ -251,22 +251,23 @@ class LowDimModelTrainer:
         :param test_data_loader: torch.utils.data.dataloader.DataLoader that provides the samples to evaluate on
         :return: all embeddings, prediction and true labels that were fed through the model from the test_data_loader
         """
-        test_embedding_batches = []
-        test_prediction_batches = []
-        test_label_batches = []
-        for batch in test_data_loader:
-            batch_images, batch_labels = batch
-            batch_embeddings, batch_out = self.model_wrapper.validation_step(batch_images)
-            test_embedding_batches.append(batch_embeddings)
-            test_prediction_batches.append(batch_out)
-            test_label_batches.append(batch_labels)
+        with torch.no_grad():
+            test_embedding_batches = []
+            test_prediction_batches = []
+            test_label_batches = []
+            for batch in test_data_loader:
+                batch_images, batch_labels = batch
+                batch_embeddings, batch_out = self.model_wrapper.validation_step(batch_images)
+                test_embedding_batches.append(batch_embeddings)
+                test_prediction_batches.append(batch_out)
+                test_label_batches.append(batch_labels)
 
-        test_result = {
-            'embeddings': test_embedding_batches,
-            'predictions': test_prediction_batches,
-            'labels': test_label_batches
-        }
-        return test_result
+            test_result = {
+                'embeddings': test_embedding_batches,
+                'predictions': test_prediction_batches,
+                'labels': test_label_batches
+            }
+            return test_result
 
     def get_loss_function_for_key(self, key):
         if key == "divergence_loss":
