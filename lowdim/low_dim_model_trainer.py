@@ -206,8 +206,6 @@ class LowDimModelTrainer:
             val_prediction_batches = []
             val_label_batches = []
             val_losses = []
-            print(f"val loader: {str(val_loader)}")
-            print(f"val loader first element: {val_loader[0]}")
             for i, batch in enumerate(val_loader[0]):
                 print(f"Len of batch in validation: {len(batch)}")
                 batch_images, batch_labels = batch

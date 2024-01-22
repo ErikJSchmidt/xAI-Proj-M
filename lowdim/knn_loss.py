@@ -185,13 +185,18 @@ class KNNLoss():
         '''
         '''
         centroids = []
-        for _class in self.classes:
+        for i, _class in enumerate(self.classes):
             class_tensors = []
             for inp, tar in zip(input, target):
                 if int(tar) == _class:
                     class_tensors.append(inp)
-            stacked_tensor = torch.stack(class_tensors)
-            centroids.append(torch.mean(stacked_tensor, dim = 0))
+            # ToDo: What if batch is missing one class?
+            if len(class_tensors) > 0:
+                stacked_tensor = torch.stack(class_tensors)
+                centroids.append(torch.mean(stacked_tensor, dim = 0))
+            else:
+                # no sample of that class in current batch, use old centroid
+                centroids.append(self.centroids[i])
         
         self.centroids = torch.stack(centroids)
 
