@@ -17,6 +17,13 @@ class KnnLossModelWrapper:
     def __init__(self, model: nn.Module):
         self.model = to_device(model, get_default_device())
 
+    def forward_batch(self, batch):
+        self.model.train()
+        images, labels = batch
+        out = self.model(images)  # Generate predictions
+
+        return out
+
     def training_step(self, batch, loss_func):
         self.model.train()
         images, labels = batch

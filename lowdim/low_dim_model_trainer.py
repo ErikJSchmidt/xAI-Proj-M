@@ -1,6 +1,6 @@
 import json
 
-from knn_loss_model_wrapper import KnnLossModelWrapper
+from low_dim_model_wrapper import LowDimModelWrapper
 import knn_loss
 from datetime import datetime
 import os
@@ -16,19 +16,22 @@ from torch import nn
 from sklearn.metrics import accuracy_score
 
 
-class KnnLossModelTrainer:
+class LowDimModelTrainer:
 
-    def __init__(self, model_wrapper: KnnLossModelWrapper, absolute_trainer_config):
-        self.model_wrapper = model_wrapper
+    def __init__(self, model_wrapper: LowDimModelWrapper, absolute_trainer_config):
+        self.model_wrapper: LowDimModelWrapper = model_wrapper
         self.trainer_config = absolute_trainer_config
         self.knn_loss = knn_loss.KNNLoss(
             classes= torch.tensor([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
         )
 
-    def train_model(self):
+    def train_and_save_model(self):
+        """
+
+        :return: path to subfolder where the model weights and training history were stored
+        """
         # Setting parameters for training
         torch.manual_seed(self.trainer_config['random_seed'])
-        opt_func = torch.optim.SGD
 
         device_aware_train_data_loader, device_aware_validation_data_loader, device_aware_test_data_loader = self.prepare_dataloaders()
 
@@ -140,7 +143,19 @@ class KnnLossModelTrainer:
             device_aware_test_data_loader
         ]
 
+
+
     def fit(self, epochs, lr, weight_decay, momentum, train_loader, val_loader):
+        """
+        Fit the model in the model_wrapper with the loss function specified in the config
+        :param epochs:
+        :param lr:
+        :param weight_decay:
+        :param momentum:
+        :param train_loader:
+        :param val_loader:
+        :return:
+        """
         history = []
         optimizer = torch.optim.SGD(
             self.model_wrapper.model.parameters(),
@@ -149,65 +164,86 @@ class KnnLossModelTrainer:
             momentum=momentum
         )
 
-        learning_rate_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=self.trainer_config['lr_reduce_patience'])
-
         loss_function_key = self.trainer_config["loss_function"]
         loss_func = self.get_loss_function_for_key(loss_function_key)
         print(f"Use loss function: {loss_function_key}, {str(loss_func)}")
 
-        if loss_function_key in ["divergence_loss"]:
-            print("Remove fc layer before training")
-            removed_fc = self.model_wrapper.model.fc
-            self.model_wrapper.model.fc = Identity()
+        learning_rate_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=self.trainer_config['lr_reduce_patience'])
 
         for epoch in range(epochs):
             print("Epoche:", epoch)
-            # the output the model returned for all samples in the epoch
-            outputs = []
-            # labels in order as processed in this epoch
-            labels = []
 
             # Training Phase
+            # the embeddings the model returned for this epoch
+            train_embeddings = []
+            # the output prediction the model returned for all embeddings in the epoch
+            train_predictions = []
+            # labels in order as processed in this epoch
+            train_labels = []
+
             train_losses = []
-            train_accuracies = []
             for i, batch in enumerate(train_loader):
-                images, batch_labels = batch
-                batch_output = self.model_wrapper.forward_batch(images)
-                batch_loss = loss_func(batch_output, batch_labels)
+                batch_images, batch_labels = batch
+                batch_embeddings, batch_out = self.model_wrapper.training_step(batch_images)
+                if loss_function_key == "divergence_loss":
+                    # The divergence loss is plugged directly onto the final embedding layer of the CNN and ignores the fc layer
+                    batch_loss = loss_func(batch_embeddings, train_labels)
+                elif loss_function_key == "cross_entropy":
+                    # The cross entropy loss is plugged onto the prob. dist. output of the fc layer
+                    batch_loss = loss_func(batch_out, train_labels)
+                # if divergence loss only CNN weights should be adjusted, if cross entropy all weights
                 batch_loss.backward()
                 optimizer.step()
                 optimizer.zero_grad()
 
+                train_embeddings = train_embeddings + batch_embeddings
+                train_predictions = train_predictions + batch_out
+                train_labels = train_labels + list(train_labels)
                 train_losses.append(batch_loss)
-                outputs = outputs + list(batch_output)
-                labels = labels + list(labels)
-
-                batch_accuracy = accuracy_score(batch_labels, batch_output)
-                train_accuracies.append(batch_accuracy)
 
 
             # Validation phase
             print("evaluate")
-            epoch_val_result = self.model_wrapper.evaluate_model(val_loader[0], loss_func)
+            val_embeddings = []
+            val_predictions = []
+            val_labels = []
+            val_losses = []
+            for i, batch in enumerate(val_loader[0]):
+                batch_images, batch_labels = batch
+                batch_embeddings, batch_out = self.model_wrapper.validation_step(batch_images)
+                if loss_function_key == "divergence_loss":
+                    # The divergence loss is plugged directly onto the final embedding layer of the CNN and ignores the fc layer
+                    batch_loss = loss_func(batch_embeddings, train_labels)
+                elif loss_function_key == "cross_entropy":
+                    # The cross entropy loss is plugged onto the prob. dist. output of the fc layer
+                    batch_loss = loss_func(batch_out, train_labels)
 
-
+                val_embeddings = val_embeddings + batch_embeddings
+                val_predictions = val_predictions + batch_out
+                val_labels = val_labels + batch_labels
+                val_losses.append(batch_loss)
 
             epoch_result = {
                 'lr': optimizer.param_groups[0]['lr'],
-                'val_loss': epoch_val_result['mean_loss'],
-                'val_acc': epoch_val_result['mean_acc'],
-                'train_loss': torch.stack(train_losses).mean().item(),
-                'train_acc': torch.stack(train_accuracies).mean().item(),
+                'train_logs':{
+                    'batch_losses': train_losses,
+                    'embeddings': train_embeddings,
+                    'predictions': train_predictions,
+                    'labels': train_labels
+                },
+                'val_logs':{
+                    'batch_losses': val_losses,
+                    'embeddings': val_embeddings,
+                    'predictions': val_predictions,
+                    'labels': val_labels
+                }
             }
 
-            learning_rate_scheduler.step(epoch_result['val_acc'])
+            avg_train_loss_of_epoch = torch.stack(train_losses).mean()
+            learning_rate_scheduler.step(avg_train_loss_of_epoch)
 
             history.append(epoch_result)
-            print(f"Epoch {epoch}:\n{epoch_result}")
-
-        if loss_function_key in ["divergence_loss"]:
-            print("Add fc that was removed before back to model")
-            self.model_wrapper.model.fc = removed_fc
+            print(f"Epoch {epoch}:\navg loss: {avg_train_loss_of_epoch}")
 
         return history
 
@@ -217,12 +253,3 @@ class KnnLossModelTrainer:
         elif key == "cross_entropy_loss":
             return F.cross_entropy
 
-
-
-
-class Identity(nn.Module):
-    def __init__(self):
-        super(Identity, self).__init__()
-
-    def forward(self, x):
-        return x

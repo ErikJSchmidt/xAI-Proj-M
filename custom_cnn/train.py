@@ -8,6 +8,7 @@ from networks.model_plain_18_layer import Plain18Layer
 from networks.model_plain_32_layer import Plain32Layer
 from networks.model_skipped_18_layer import Skipped18Layer
 from networks.model_skipped_18_layer_for_embedding import Skipped18LayerForEmbbeding
+from networks.model_skipped_18_layer_for_low_dim_embedding import Skipped18LayerForLowDimEmbbeding
 from networks.model_skipped_32_layer import Skipped32Layer
 
 from networks.model_backloaded_12_layer import BackLoaded12Layer
@@ -147,6 +148,8 @@ def get_model(model_name):
         raw_model = Skipped32Layer()
     elif model_name == "Skipped18LayerForEmbbeding":
         raw_model = Skipped18LayerForEmbbeding()
+    elif model_name == 'Skipped18LayerForLowDimEmbbeding':
+        raw_model = Skipped18LayerForLowDimEmbbeding()
     elif model_name == "Uniform12Layer":
         raw_model = Uniform12Layer()
     elif model_name == "Uniform12LayerSkipped":

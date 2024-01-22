@@ -29,6 +29,12 @@ from model_trainer import ModelTrainer
 from knn_loss_model_wrapper import KnnLossModelWrapper
 from knn_loss_model_trainer import KnnLossModelTrainer
 
+"""
+Modified version of our train.py script. Here the model can be trained with one loss for some epochs, and then the 
+obtained model is saved. Then the model weights are loaded and the model is trained with an other loss for some
+epochs before being saved again (to another file).
+"""
+
 
 # ---- Downloading Cifar10 ----
 def download_and_unpack_dataset(data_dir):

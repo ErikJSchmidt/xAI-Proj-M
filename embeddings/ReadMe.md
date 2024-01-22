@@ -29,3 +29,11 @@ Epochs: 40
 - Load state dict and train with cross entropy
 - Assess knn classification accuracy
 
+Model weights after 2 epochs divergence_loss are stored in Skipped18LayerForEmbbeding_20240114_2152.
+These weights are then loaded and trained with cross entropy for further 38 epochs and finally stored in
+Skipped18LayerForEmbbeding_20240114_2315.
+Test accuracy on cifar test set(10000 samples) with k=10: **48.93**
+
+Loss: Divergence Loss, Cross Entropy
+Epochs 2, 38
+
