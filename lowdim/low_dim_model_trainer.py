@@ -175,11 +175,11 @@ class LowDimModelTrainer:
 
             # Training Phase
             # the embeddings the model returned for this epoch
-            train_embeddings = []
+            train_embedding_batches = []
             # the output prediction the model returned for all embeddings in the epoch
-            train_predictions = []
+            train_prediction_batches= []
             # labels in order as processed in this epoch
-            train_labels = []
+            train_label_batches = []
 
             train_losses = []
             for i, batch in enumerate(train_loader):
@@ -187,55 +187,55 @@ class LowDimModelTrainer:
                 batch_embeddings, batch_out = self.model_wrapper.training_step(batch_images)
                 if loss_function_key == "divergence_loss":
                     # The divergence loss is plugged directly onto the final embedding layer of the CNN and ignores the fc layer
-                    batch_loss = loss_func(batch_embeddings, train_labels)
+                    batch_loss = loss_func(batch_embeddings, batch_labels)
                 elif loss_function_key == "cross_entropy":
                     # The cross entropy loss is plugged onto the prob. dist. output of the fc layer
-                    batch_loss = loss_func(batch_out, train_labels)
+                    batch_loss = loss_func(batch_out, batch_labels)
                 # if divergence loss only CNN weights should be adjusted, if cross entropy all weights
                 batch_loss.backward()
                 optimizer.step()
                 optimizer.zero_grad()
 
-                train_embeddings = train_embeddings + batch_embeddings
-                train_predictions = train_predictions + batch_out
-                train_labels = train_labels + list(train_labels)
+                train_embedding_batches.append(batch_embeddings)
+                train_prediction_batches.append(batch_out)
+                train_label_batches.append(batch_labels)
                 train_losses.append(batch_loss)
 
 
             # Validation phase
             print("evaluate")
-            val_embeddings = []
-            val_predictions = []
-            val_labels = []
+            val_embedding_batches = []
+            val_prediction_batches = []
+            val_label_batches = []
             val_losses = []
             for i, batch in enumerate(val_loader[0]):
                 batch_images, batch_labels = batch
                 batch_embeddings, batch_out = self.model_wrapper.validation_step(batch_images)
                 if loss_function_key == "divergence_loss":
                     # The divergence loss is plugged directly onto the final embedding layer of the CNN and ignores the fc layer
-                    batch_loss = loss_func(batch_embeddings, train_labels)
+                    batch_loss = loss_func(batch_embeddings, batch_labels)
                 elif loss_function_key == "cross_entropy":
                     # The cross entropy loss is plugged onto the prob. dist. output of the fc layer
-                    batch_loss = loss_func(batch_out, train_labels)
+                    batch_loss = loss_func(batch_out, batch_labels)
 
-                val_embeddings = val_embeddings + batch_embeddings
-                val_predictions = val_predictions + batch_out
-                val_labels = val_labels + batch_labels
+                val_embedding_batches.append(batch_embeddings)
+                val_prediction_batches.append(batch_out)
+                val_label_batches.append(batch_labels)
                 val_losses.append(batch_loss)
 
             epoch_result = {
                 'lr': optimizer.param_groups[0]['lr'],
                 'train_logs':{
                     'batch_losses': train_losses,
-                    'embeddings': train_embeddings,
-                    'predictions': train_predictions,
-                    'labels': train_labels
+                    'embeddings': train_embedding_batches,
+                    'predictions': train_prediction_batches,
+                    'labels': train_label_batches
                 },
                 'val_logs':{
                     'batch_losses': val_losses,
-                    'embeddings': val_embeddings,
-                    'predictions': val_predictions,
-                    'labels': val_labels
+                    'embeddings': val_embedding_batches,
+                    'predictions': val_prediction_batches,
+                    'labels': val_label_batches
                 }
             }
 

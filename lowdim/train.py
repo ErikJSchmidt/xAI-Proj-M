@@ -8,7 +8,6 @@ import sys
 import os
 from torchvision.datasets.utils import download_url
 import tarfile
-from custom_cnn.networks.model_skipped_18_layer_for_low_dim_embedding import Skipped18LayerForLowDimEmbbeding
 from low_dim_model_wrapper import LowDimModelWrapper
 from low_dim_model_trainer import LowDimModelTrainer
 
@@ -56,12 +55,14 @@ def train(working_dir, trainer_config):
 
         print(f"Train with {phase_config['loss_function']} for {phase_config['epochs']} epochs")
 
+        config_for_trainer_this_phase = {**absolute_trainer_config, **phase_config}
+
         if model_folder_path == None:
             print("No model weights. Start training form scratch.")
             model_wrapper = LowDimModelWrapper()
             model_trainer = LowDimModelTrainer(
                 model_wrapper=model_wrapper,
-                absolute_trainer_config=phase_config
+                absolute_trainer_config=config_for_trainer_this_phase
             )
             model_folder_path = model_trainer.train_and_save_model()
         else:
@@ -70,7 +71,7 @@ def train(working_dir, trainer_config):
             model_wrapper.load_model_weights(model_folder_path + "/model_state_dict")
             model_trainer = LowDimModelTrainer(
                 model_wrapper=model_wrapper,
-                absolute_trainer_config=phase_config
+                absolute_trainer_config=config_for_trainer_this_phase
             )
             model_folder_path = model_trainer.train_and_save_model()
 

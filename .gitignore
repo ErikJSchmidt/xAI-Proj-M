@@ -1,0 +1,14 @@
+# file: ~/.gitignore_global
+
+.idea
+data/cifar10
+data/cifar10.tgz
+custom_cnn/data/cifar10
+custom_cnn/data/cifar10.tgz
+__pycache__/
+custom_cnn/__pycache__/
+embeddings/embedding_data/
+embeddings/pretrained_models/
+lowdim/data/cifar10
+lowdim/data/cifar10.tgz
+

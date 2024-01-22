@@ -1,9 +1,6 @@
 import torch
-import torch.nn as nn
 from utility_functions import get_default_device, to_device
-from sklearn.metrics import accuracy_score
-from custom_cnn.networks.model_skipped_18_layer_for_low_dim_embedding import Skipped18LayerForLowDimEmbbeding
-
+from networks.model_skipped_18_layer_for_low_dim_embedding import Skipped18LayerForLowDimEmbbeding
 
 class LowDimModelWrapper:
     """
