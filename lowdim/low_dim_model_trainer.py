@@ -12,9 +12,6 @@ from torch.utils.data.dataloader import DataLoader
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from utility_functions import DeviceDataLoader, get_default_device
 import torch.nn.functional as F
-import chromadb
-from torch import nn
-from sklearn.metrics import accuracy_score
 
 
 class LowDimModelTrainer:
