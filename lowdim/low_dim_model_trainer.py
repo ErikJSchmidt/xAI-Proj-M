@@ -12,6 +12,7 @@ from torch.utils.data.dataloader import DataLoader
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from utility_functions import DeviceDataLoader, get_default_device
 import torch.nn.functional as F
+import chromadb
 from torch import nn
 from sklearn.metrics import accuracy_score
 
@@ -22,7 +23,7 @@ class LowDimModelTrainer:
         self.model_wrapper: LowDimModelWrapper = model_wrapper
         self.trainer_config = absolute_trainer_config
         self.knn_loss = knn_loss.KNNLoss(
-            classes= torch.tensor([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+            classes=torch.tensor([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
         )
 
     def train_and_save_model(self):
@@ -49,7 +50,6 @@ class LowDimModelTrainer:
             val_loader=device_aware_validation_data_loader
         )
 
-
         print("Done with training. Now on to test set")
         test_set_result = self.evaluate_model(device_aware_test_data_loader)
 
@@ -71,8 +71,14 @@ class LowDimModelTrainer:
             'final_test_set_results': test_set_result
         }
 
+        # create chroma db to store embeddings of all epochs
+        self.store_training_run_embeddings(training_run)
+        # store parameters of the training run
         training_run_file = open(model_subfolder_path + "/training_run.json", "w+")
-        json.dump(training_run, training_run_file)
+        json.dump({
+            'training_config': self.trainer_config,
+            'epochs':[{'lr': epoch_result['lr']} for epoch_result in training_history]
+        }, training_run_file)
         training_run_file.close()
 
         # Save the fitted model
@@ -140,8 +146,6 @@ class LowDimModelTrainer:
             device_aware_test_data_loader
         ]
 
-
-
     def fit(self, epochs, lr, weight_decay, momentum, train_loader, val_loader):
         """
         Fit the model in the model_wrapper with the loss function specified in the config
@@ -165,7 +169,8 @@ class LowDimModelTrainer:
         loss_func = self.get_loss_function_for_key(loss_function_key)
         print(f"Use loss function: {loss_function_key}, {str(loss_func)}")
 
-        learning_rate_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=self.trainer_config['lr_reduce_patience'])
+        learning_rate_scheduler = ReduceLROnPlateau(optimizer, 'min',
+                                                    patience=self.trainer_config['lr_reduce_patience'])
 
         for epoch in range(epochs):
             print("Epoche:", epoch)
@@ -175,7 +180,7 @@ class LowDimModelTrainer:
             # the embeddings the model returned for this epoch
             train_embedding_batches = []
             # the output prediction the model returned for all embeddings in the epoch
-            train_prediction_batches= []
+            train_prediction_batches = []
             # labels in order as processed in this epoch
             train_label_batches = []
 
@@ -198,7 +203,6 @@ class LowDimModelTrainer:
                 train_prediction_batches.append(batch_out)
                 train_label_batches.append(batch_labels)
                 train_losses.append(batch_loss)
-
 
             # Validation phase
             print("validation")
@@ -224,13 +228,13 @@ class LowDimModelTrainer:
 
             epoch_result = {
                 'lr': optimizer.param_groups[0]['lr'],
-                'train_results':{
+                'train_results': {
                     'batch_losses': train_losses,
                     'embeddings': train_embedding_batches,
                     'predictions': train_prediction_batches,
                     'labels': train_label_batches
                 },
-                'val_results':{
+                'val_results': {
                     'batch_losses': val_losses,
                     'embeddings': val_embedding_batches,
                     'predictions': val_prediction_batches,
@@ -275,3 +279,84 @@ class LowDimModelTrainer:
         elif key == "cross_entropy_loss":
             return F.cross_entropy
 
+    def store_training_run_embeddings(self, training_run):
+        """
+        training_run = {
+            'training_config': self.trainer_config,
+            'training_history': training_history,
+            'final_test_set_results': test_set_result
+        }
+        """
+        # Create subfolder for model and results of this training run
+        if not os.path.exists(self.trainer_config['store_model_dir']):
+            os.makedirs(self.trainer_config['store_model_dir'])
+
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M")
+        model_subfolder_name = self.trainer_config['model_name'] + "_" + timestamp
+        model_subfolder_path = self.trainer_config['store_model_dir'] + "/" + model_subfolder_name
+        os.makedirs(model_subfolder_path)
+
+        chroma_client = chromadb.PersistentClient(path=model_subfolder_path)
+
+        # store training and validation result of each epoch to vector store
+        for epoch, epoch_result in enumerate(training_run['training_history']):
+            # the table name under which the embeddings produced in this epoch get stored
+            epoch_collection_name = f"epoch_{epoch}_embeddings"
+            epoch_collection = chroma_client.create_collection(name=epoch_collection_name)
+
+            # store data on the training samples processed in this epoch
+            train_results = epoch_result['train_results']
+            for batch_nr in range(0, len(train_results['batch_losses'])):
+                # add training data embeddings calculated for this batch
+                batch_loss = train_results['batch_losses'][batch_nr]
+                batch_train_embeddings = train_results['embeddings'][batch_nr].tolist()
+                batch_train_predictions = epoch_result['training_results']['predictions'][batch_nr].tolist()
+                batch_labels = train_results['labels'][batch_nr]
+                epoch_collection.add(
+                    embeddings=batch_train_embeddings,
+                    metadatas=[
+                        {
+                            'dataset_type': 'train',
+                            'label': x[0],
+                            'prediction': x[1],
+                            'batch_loss': batch_loss
+                        } for x in zip(batch_labels, batch_train_predictions)
+                    ],
+                    ids=[f"train_{batch_nr}_{i}" for i in range(0, len(batch_labels))]
+                )
+
+            # store data on the validation samples processed in this epoch
+            val_results = epoch_result['val_results']
+            for batch_nr in range(0, len(val_results['batch_losses'])):
+                # add validation data embeddings calculated for this batch
+                batch_loss = val_results['batch_losses'][batch_nr]
+                batch_val_embeddings = val_results['embeddings'][batch_nr].tolist()
+                batch_val_predictions = val_results['predictions'][batch_nr]
+                batch_labels = val_results['labels'][batch_nr]
+                epoch_collection.add(
+                    embeddings=batch_val_embeddings,
+                    metadatas=[{
+                        'dataset_type': 'val',
+                        'label': x[0],
+                        'prediction': x[1],
+                        'batch_loss': batch_loss
+                    } for x in zip(batch_labels, batch_val_predictions)],
+                    ids=[f"val_{batch_nr}_{i}" for i in range(0, len(batch_labels))]
+                )
+
+        # store results of the test set
+        test_collection = chroma_client.create_collection(name="test_embeddings")
+        test_results = training_run['final_test_set_results']
+        batch_nr = 0
+        for embeddings, predictions, labels in zip(test_results['embeddings'], test_results['predictions'],
+                                                   test_results['labels']):
+            test_collection.add(
+                embeddings=embeddings.tolist(),
+                metadatas=[{
+                    'dataset_type': 'test',
+                    'label': x[0],
+                    'prediction': x[1]
+                } for x in zip(labels, predictions)],
+                ids=[f"test_{batch_nr}_{i}" for i in range(0, len(labels))]
+            )
+            batch_nr += 1
