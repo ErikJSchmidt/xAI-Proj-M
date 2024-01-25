@@ -31,6 +31,16 @@ class LowDimModelTrainer:
         # Setting parameters for training
         torch.manual_seed(self.trainer_config['random_seed'])
 
+        # prepare folder where training artifacts will be stored
+        # Create subfolder for model and results of this training run
+        if not os.path.exists(self.trainer_config['store_model_dir']):
+            os.makedirs(self.trainer_config['store_model_dir'])
+
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M")
+        model_subfolder_name = self.trainer_config['model_name'] + "_" + timestamp
+        model_subfolder_path = self.trainer_config['store_model_dir'] + "/" + model_subfolder_name
+        os.makedirs(model_subfolder_path)
+
         device_aware_train_data_loader, device_aware_validation_data_loader, device_aware_test_data_loader = self.prepare_dataloaders()
 
         print("ToDo: Why is device_validation_data_loader wrapped in a tuple?")
@@ -44,7 +54,8 @@ class LowDimModelTrainer:
             weight_decay=self.trainer_config['weight_decay'],
             momentum=self.trainer_config['momentum'],
             train_loader=device_aware_train_data_loader,
-            val_loader=device_aware_validation_data_loader
+            val_loader=device_aware_validation_data_loader,
+            model_subfolder_path=model_subfolder_path
         )
 
         print("Done with training. Now on to test set")
@@ -52,24 +63,10 @@ class LowDimModelTrainer:
 
         print(f"Done processing the test set")
 
-        # Create subfolder for model and results of this training run
-        if not os.path.exists(self.trainer_config['store_model_dir']):
-            os.makedirs(self.trainer_config['store_model_dir'])
-
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-        model_subfolder_name = self.trainer_config['model_name'] + "_" + timestamp
-        model_subfolder_path = self.trainer_config['store_model_dir'] + "/" + model_subfolder_name
-        os.makedirs(model_subfolder_path)
 
         # Save training results
-        training_run = {
-            'training_config': self.trainer_config,
-            'training_history': training_history,
-            'final_test_set_results': test_set_result
-        }
+        self.store_test_result(test_set_result, model_subfolder_path)
 
-        # create chroma db to store embeddings of all epochs
-        self.store_training_run_embeddings(training_run, model_subfolder_path)
         # store parameters of the training run
         training_run_file = open(model_subfolder_path + "/training_run.json", "w+")
         json.dump({
@@ -143,7 +140,7 @@ class LowDimModelTrainer:
             device_aware_test_data_loader
         ]
 
-    def fit_and_store_results(self, epochs, lr, weight_decay, momentum, train_loader, val_loader):
+    def fit_and_store_results(self, epochs, lr, weight_decay, momentum, train_loader, val_loader, model_subfolder_path):
         """
         Fit the model in the model_wrapper with the loss function specified in the config
         :param epochs:
@@ -240,11 +237,12 @@ class LowDimModelTrainer:
             }
 
             # ToDo: store epoch results to folder
+            self.store_epoch_result(epoch_result, epoch, model_subfolder_path)
 
             avg_train_loss_of_epoch = torch.stack(train_losses).mean()
             learning_rate_scheduler.step(avg_train_loss_of_epoch)
 
-            history.append(epoch_result)
+            history.append({'lr':epoch_result['lr']})
             print(f"Epoch {epoch}:\navg loss: {avg_train_loss_of_epoch}")
 
         return history
@@ -278,6 +276,60 @@ class LowDimModelTrainer:
         elif key == "cross_entropy_loss":
             return F.cross_entropy
 
+    def store_epoch_result(self, epoch_result, epoch, model_subfolder_path):
+        epoch_folder_path = f"{model_subfolder_path}/epoch_{epoch}"
+        os.makedirs(epoch_folder_path)
+
+        # store data on the training samples processed in this epoch
+        epoch_train_embeddings = []
+        epoch_train_predictions = []
+        epoch_train_labels = []
+        train_results = epoch_result['train_results']
+        for batch_nr in range(0, len(train_results['batch_losses'])):
+            # add training data embeddings calculated for this batch
+            batch_loss = train_results['batch_losses'][batch_nr]
+            batch_train_embeddings = train_results['embeddings'][batch_nr].tolist()
+            batch_train_predictions = train_results['predictions'][batch_nr].tolist()
+            batch_labels = train_results['labels'][batch_nr]
+
+            epoch_train_embeddings.extend(batch_train_embeddings)
+            epoch_train_predictions.extend(batch_train_predictions)
+            epoch_train_labels.extend(batch_labels)
+
+        torch.save(epoch_train_embeddings, f"{epoch_folder_path}/train_embeddings.pt")
+        torch.save(epoch_train_predictions, f"{epoch_folder_path}/train_predictions.pt")
+        torch.save(epoch_train_labels, f"{epoch_folder_path}/train_labels.pt")
+
+        # store data on the validation samples processed in this epoch
+        val_results = epoch_result['val_results']
+        epoch_val_embeddings = []
+        epoch_val_predictions = []
+        epoch_val_labels = []
+        for batch_nr in range(0, len(val_results['batch_losses'])):
+            # add validation data embeddings calculated for this batch
+            batch_loss = val_results['batch_losses'][batch_nr]
+            batch_val_embeddings = val_results['embeddings'][batch_nr].tolist()
+            batch_val_predictions = val_results['predictions'][batch_nr]
+            batch_labels = val_results['labels'][batch_nr]
+
+            epoch_val_embeddings.extend(batch_val_embeddings)
+            epoch_val_predictions.extend(batch_val_predictions)
+            epoch_val_labels.extend(batch_labels)
+
+        torch.save(epoch_val_embeddings, f"{epoch_folder_path}/val_embeddings.pt")
+        torch.save(epoch_val_predictions, f"{epoch_folder_path}/val_predictions.pt")
+        torch.save(epoch_val_labels, f"{epoch_folder_path}/val_labels.pt")
+
+    def store_test_result(self, test_result, model_subfolder_path):
+        # store results of the test set
+        test_folder_path = f"{model_subfolder_path}/test"
+        os.makedirs(test_folder_path)
+
+        torch.save(test_result['embeddings'], f"{test_folder_path}/test_embeddings.pt")
+        torch.save(test_result['predictions'], f"{test_folder_path}/test_perdictions.pt")
+        torch.save(test_result['labels'], f"{test_folder_path}/test_labels.pt")
+
+    @DeprecationWarning
     def store_training_run_embeddings(self, training_run, model_subfolder_path):
         """
         training_run = {
