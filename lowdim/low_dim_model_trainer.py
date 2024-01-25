@@ -278,7 +278,7 @@ class LowDimModelTrainer:
         elif key == "cross_entropy_loss":
             return F.cross_entropy
 
-    def store_training_run_embeddings(self, training_run, model_subfoler_path):
+    def store_training_run_embeddings(self, training_run, model_subfolder_path):
         """
         training_run = {
             'training_config': self.trainer_config,
