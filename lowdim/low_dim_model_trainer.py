@@ -38,7 +38,7 @@ class LowDimModelTrainer:
         print(type(device_aware_validation_data_loader))
         print(type(device_aware_test_data_loader))
 
-        training_history = self.fit(
+        training_history = self.fit_and_store_results(
             epochs=self.trainer_config['epochs'],
             lr=self.trainer_config['learning_rate_start'],
             weight_decay=self.trainer_config['weight_decay'],
@@ -69,7 +69,7 @@ class LowDimModelTrainer:
         }
 
         # create chroma db to store embeddings of all epochs
-        self.store_training_run_embeddings(training_run)
+        self.store_training_run_embeddings(training_run, model_subfolder_path)
         # store parameters of the training run
         training_run_file = open(model_subfolder_path + "/training_run.json", "w+")
         json.dump({
@@ -143,7 +143,7 @@ class LowDimModelTrainer:
             device_aware_test_data_loader
         ]
 
-    def fit(self, epochs, lr, weight_decay, momentum, train_loader, val_loader):
+    def fit_and_store_results(self, epochs, lr, weight_decay, momentum, train_loader, val_loader):
         """
         Fit the model in the model_wrapper with the loss function specified in the config
         :param epochs:
@@ -239,6 +239,8 @@ class LowDimModelTrainer:
                 }
             }
 
+            # ToDo: store epoch results to folder
+
             avg_train_loss_of_epoch = torch.stack(train_losses).mean()
             learning_rate_scheduler.step(avg_train_loss_of_epoch)
 
@@ -276,7 +278,7 @@ class LowDimModelTrainer:
         elif key == "cross_entropy_loss":
             return F.cross_entropy
 
-    def store_training_run_embeddings(self, training_run):
+    def store_training_run_embeddings(self, training_run, model_subfoler_path):
         """
         training_run = {
             'training_config': self.trainer_config,
@@ -284,14 +286,6 @@ class LowDimModelTrainer:
             'final_test_set_results': test_set_result
         }
         """
-        # Create subfolder for model and results of this training run
-        if not os.path.exists(self.trainer_config['store_model_dir']):
-            os.makedirs(self.trainer_config['store_model_dir'])
-
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-        model_subfolder_name = self.trainer_config['model_name'] + "_" + timestamp
-        model_subfolder_path = self.trainer_config['store_model_dir'] + "/" + model_subfolder_name
-        os.makedirs(model_subfolder_path)
 
         # store training and validation result of each epoch
         for epoch, epoch_result in enumerate(training_run['training_history']):
