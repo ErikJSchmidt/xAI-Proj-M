@@ -302,7 +302,7 @@ class LowDimModelTrainer:
                 # add training data embeddings calculated for this batch
                 batch_loss = train_results['batch_losses'][batch_nr]
                 batch_train_embeddings = train_results['embeddings'][batch_nr].tolist()
-                batch_train_predictions = epoch_result['training_results']['predictions'][batch_nr].tolist()
+                batch_train_predictions = train_results['predictions'][batch_nr].tolist()
                 batch_labels = train_results['labels'][batch_nr]
 
                 epoch_train_embeddings.extend(batch_train_embeddings)
