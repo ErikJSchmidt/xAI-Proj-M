@@ -296,15 +296,16 @@ class LowDimModelTrainer:
         model_subfolder_path = self.trainer_config['store_model_dir'] + "/" + model_subfolder_name
         os.makedirs(model_subfolder_path)
 
-        chroma_client = chromadb.PersistentClient(path=model_subfolder_path)
-
-        # store training and validation result of each epoch to vector store
+        # store training and validation result of each epoch
         for epoch, epoch_result in enumerate(training_run['training_history']):
             # the table name under which the embeddings produced in this epoch get stored
-            epoch_collection_name = f"epoch_{epoch}_embeddings"
-            epoch_collection = chroma_client.create_collection(name=epoch_collection_name)
+            epoch_folder_path = f"{model_subfolder_path}/epoch_{epoch}"
+            os.makedirs(epoch_folder_path)
 
             # store data on the training samples processed in this epoch
+            epoch_train_embeddings = []
+            epoch_train_predictions = []
+            epoch_train_labels = []
             train_results = epoch_result['train_results']
             for batch_nr in range(0, len(train_results['batch_losses'])):
                 # add training data embeddings calculated for this batch
@@ -312,51 +313,41 @@ class LowDimModelTrainer:
                 batch_train_embeddings = train_results['embeddings'][batch_nr].tolist()
                 batch_train_predictions = epoch_result['training_results']['predictions'][batch_nr].tolist()
                 batch_labels = train_results['labels'][batch_nr]
-                epoch_collection.add(
-                    embeddings=batch_train_embeddings,
-                    metadatas=[
-                        {
-                            'dataset_type': 'train',
-                            'label': x[0],
-                            'prediction': x[1],
-                            'batch_loss': batch_loss
-                        } for x in zip(batch_labels, batch_train_predictions)
-                    ],
-                    ids=[f"train_{batch_nr}_{i}" for i in range(0, len(batch_labels))]
-                )
+
+                epoch_train_embeddings.extend(batch_train_embeddings)
+                epoch_train_predictions.extend(batch_train_predictions)
+                epoch_train_labels.extend(batch_labels)
+
+            torch.save(epoch_train_embeddings, f"{epoch_folder_path}/train_embeddings.pt")
+            torch.save(epoch_train_predictions, f"{epoch_folder_path}/train_predictions.pt")
+            torch.save(epoch_train_labels, f"{epoch_folder_path}/train_labels.pt")
 
             # store data on the validation samples processed in this epoch
             val_results = epoch_result['val_results']
+            epoch_val_embeddings = []
+            epoch_val_predictions = []
+            epoch_val_labels = []
             for batch_nr in range(0, len(val_results['batch_losses'])):
                 # add validation data embeddings calculated for this batch
                 batch_loss = val_results['batch_losses'][batch_nr]
                 batch_val_embeddings = val_results['embeddings'][batch_nr].tolist()
                 batch_val_predictions = val_results['predictions'][batch_nr]
                 batch_labels = val_results['labels'][batch_nr]
-                epoch_collection.add(
-                    embeddings=batch_val_embeddings,
-                    metadatas=[{
-                        'dataset_type': 'val',
-                        'label': x[0],
-                        'prediction': x[1],
-                        'batch_loss': batch_loss
-                    } for x in zip(batch_labels, batch_val_predictions)],
-                    ids=[f"val_{batch_nr}_{i}" for i in range(0, len(batch_labels))]
-                )
+
+                epoch_val_embeddings.extend(batch_val_embeddings)
+                epoch_val_predictions.extend(batch_val_predictions)
+                epoch_val_labels.extend(batch_labels)
+
+            torch.save(epoch_val_embeddings, f"{epoch_folder_path}/val_embeddings.pt")
+            torch.save(epoch_val_predictions, f"{epoch_folder_path}/val_predictions.pt")
+            torch.save(epoch_val_labels, f"{epoch_folder_path}/val_labels.pt")
+
 
         # store results of the test set
-        test_collection = chroma_client.create_collection(name="test_embeddings")
+        test_folder_path = f"{model_subfolder_path}/test"
+        os.makedirs(test_folder_path)
         test_results = training_run['final_test_set_results']
-        batch_nr = 0
-        for embeddings, predictions, labels in zip(test_results['embeddings'], test_results['predictions'],
-                                                   test_results['labels']):
-            test_collection.add(
-                embeddings=embeddings.tolist(),
-                metadatas=[{
-                    'dataset_type': 'test',
-                    'label': x[0],
-                    'prediction': x[1]
-                } for x in zip(labels, predictions)],
-                ids=[f"test_{batch_nr}_{i}" for i in range(0, len(labels))]
-            )
-            batch_nr += 1
+
+        torch.save(test_results['embeddings'], f"{test_folder_path}/test_embeddings.pt")
+        torch.save(test_results['predictions'], f"{test_folder_path}/test_perdictions.pt")
+        torch.save(test_results['labels'], f"{test_folder_path}/test_labels.pt")
