@@ -185,7 +185,7 @@ class LowDimModelTrainer:
                 if loss_function_key == "divergence_loss":
                     # The divergence loss is plugged directly onto the final embedding layer of the CNN and ignores the fc layer
                     batch_loss = loss_func(batch_embeddings, batch_labels)
-                elif loss_function_key == "cross_entropy":
+                elif loss_function_key == "cross_entropy_loss":
                     # The cross entropy loss is plugged onto the prob. dist. output of the fc layer
                     batch_loss = loss_func(batch_out, batch_labels)
                 # if divergence loss only CNN weights should be adjusted, if cross entropy all weights
