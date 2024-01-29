@@ -317,4 +317,20 @@ class KNNLoss():
             distances.append(torch.mean(local_tensor))
 
         return distances
+    
+    def predefine_centroids(self, dimensionality : int):
+        '''
+        '''
+
+        centroids = []
+        for _class in self.classes:
+            centroid = []
+            for i in range(dimensionality):
+                if i % len(self.classes) == _class:
+                    centroid.append(1)
+                else:
+                    centroid.append(0)
+            centroids.append(utility_functions.to_device(torch.tensor(centroid), self.device))
+
+        self.centroids = torch.stack(centroids)
 
