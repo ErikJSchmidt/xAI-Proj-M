@@ -13,6 +13,7 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 from utility_functions import DeviceDataLoader, get_default_device
 import torch.nn.functional as F
 
+import tqdm
 
 class KnnLossModelTrainer:
 
@@ -150,7 +151,7 @@ class KnnLossModelTrainer:
 
 
         for epoch in range(epochs):
-            print("Epoche:", epoch)
+            print("Epoch:", epoch)
             # Depending on epoch use different loss function
             # if epoch < epochs *2/3:
             #     loss_func = F.cross_entropy
@@ -161,32 +162,36 @@ class KnnLossModelTrainer:
             # else:
             #     loss_func = self.knn_loss.combined_loss
 
-            # TODO
-            if epoch <= 2:
-                # loss_func = F.cross_entropy
-                loss_func = self.knn_loss.divergence_loss
+            # ! Essentially, this turns into an absolute mess as the scheduling of loss functions is important for training performance.
+            if epoch > 0:
+                loss_func = self.knn_loss.combined_loss
             else:
-                loss_func = self.knn_loss.convergence_loss
-
+                loss_func = self.knn_loss.divergence_loss
+            # loss_func = self.knn_loss.combined_loss
 
             # Training Phase
             train_losses = []
             train_accuracies = []
-            for i, batch in enumerate(train_loader):
+            for batch in train_loader:
                 batch_train_result = self.model_wrapper.training_step(batch, loss_func=loss_func)
                 loss = batch_train_result['batch_loss']
                 train_losses.append(loss)
                 train_accuracies.append(batch_train_result['batch_acc'])
-                # print(type(loss))
-                # print(loss.shape)
-                # print(loss)
-                # print(i)
                 loss.backward()
                 optimizer.step()
                 optimizer.zero_grad()
             # Validation phase
-            print("evaluate")
+            print("\nevaluate\n")
             epoch_val_result = self.model_wrapper.evaluate_model(val_loader[0], loss_func)
+            imgs, labs = next(iter(val_loader[0]))
+            out = self.model_wrapper.model(imgs)
+            print(
+                self.knn_loss.convergence_loss(out, labs).item(),
+                self.knn_loss.max_convergence_loss(out, labs).item(),
+                self.knn_loss.uniformity_loss(out, labs).item(),
+                self.knn_loss.divergence_diagnostic().item()
+            )
+            print("\n")
 
             epoch_result = {
                 'lr': optimizer.param_groups[0]['lr'],
