@@ -57,13 +57,11 @@ def plot_2d_embeddings(epoch_result_subfolder_path):
 
     for class_embeddings, color in list(zip(embeddings_by_class, colors)):
         x_values = [embedding[0] for embedding in class_embeddings]
-        print(f"max x value:{np.max(x_values)}")
         y_values = [embedding[1] for embedding in class_embeddings]
-        print(f"max y value:{np.max(y_values)}")
         plt.scatter(
             x=x_values,
             y=y_values,
-            c=color
+            c=np.array([color])
         )
 
     plt.show()
@@ -98,7 +96,7 @@ def plot_2d_class_centroids(epoch_result_subfolder_path):
         plt.scatter(
             x=[centroid[0]],
             y=[centroid[1]],
-            c=color
+            c=np.array([color])
         )
 
     plt.show()
