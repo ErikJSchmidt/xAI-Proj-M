@@ -44,6 +44,38 @@ class KNNLoss():
 
         return torch.mul(scaler, torch.add(convergence, torch.add(uniformity, divergence)))
 
+    def combined_loss_optim(self, input: torch.Tensor, target: torch.Tensor):
+        '''
+        '''
+
+        if self.centroids is None:
+            self.prepare_divergence(input, target)
+
+        centroid_distances = self.prepare_divergence(input, target)
+        self.mean_centroid_distance = torch.mean(torch.stack(centroid_distances))
+
+        instance_distances = []
+        for inp, tar in zip(input, target):
+            label = int(tar)
+            corresponding_centroid = self.centroids[label].detach()
+            instance_distances.append(self.euclidean_distance(inp, corresponding_centroid))
+
+        dists = torch.mul(torch.stack(instance_distances), 1)
+
+        convergence = torch.mean(dists)
+        uniformity = torch.std(dists)
+        divergence = torch.div(1, self.mean_centroid_distance).mul(1000)
+
+        ratio = torch.pow(
+            torch.div(
+                torch.add(convergence, uniformity),
+                torch.mul(self.mean_centroid_distance, 2)
+            ),
+            10
+        )
+
+        return torch.mul(ratio, torch.add(convergence, torch.add(uniformity, divergence)))
+
 
     def divergence_loss(self, input: torch.Tensor, target: torch.Tensor):
         '''
