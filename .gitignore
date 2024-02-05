@@ -2,3 +2,4 @@ custom_cnn/data
 custom_cnn/__pycache__
 embeddings/__pycache__
 embeddings/embeddings_data
+*.pyc

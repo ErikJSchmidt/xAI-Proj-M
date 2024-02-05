@@ -38,12 +38,12 @@ class KNNLoss():
         #             local_d.append(self.cosine_similarity(centroid_a, centroid_b))
         #     local_t = torch.stack(local_d)
         #     d.append(torch.mean(local_t))
-        for i in range(len(self.centroids)):
-            centroid_a = self.centroids[i]
+        for _class in self.classes:
+            centroid_a = self.centroids[int(_class)]
             local_d = []
-            for j in range(len(self.centroids)):
-                centroid_b = self.centroids[j]
-                if not i == j:
+            for __class in self.classes:
+                centroid_b = self.centroids[int(__class)]
+                if not _class == __class:
                     local_d.append(self.cosine_similarity(centroid_a, centroid_b))
             local_t = torch.stack(local_d)
             d.append(torch.mean(local_t))
@@ -160,17 +160,19 @@ class KNNLoss():
     def divergence_renewed(self, input : torch.Tensor, target : torch.Tensor):
         '''
         Renewed Divergence loss, working towards generating spread-out centroids.
+
+        TODO: Test this in the lowdim branch. For some reason, training on these centroids does not work, while training on fixed centroids does...
         '''
 
         self.prep_divergence_renewed(input, target)
 
         d = []
-        for i in range(len(self.centroids)):
-            centroid_a = self.centroids[i]
+        for _class in self.classes:
+            centroid_a = self.centroids[int(_class)]
             local_d = []
-            for j in range(len(self.centroids)):
-                centroid_b = self.centroids[j]
-                if not i == j:
+            for __class in self.classes:
+                centroid_b = self.centroids[int(__class)]
+                if not _class == __class:
                     local_d.append(self.cosine_similarity(centroid_a, centroid_b))
             local_t = torch.stack(local_d)
             d.append(torch.mean(local_t))
@@ -290,114 +292,30 @@ class KNNLoss():
 
         return torch.std(torch.stack(distances))
 
-
-
-    # Try to make this loss function closer to F.cross_entropy, so that we can train a model with cross entropy for some
-    # epochs and then switch to this loss function
-
-
-    # def divergence_loss_adjusted(
-    #         self,
-    #         input: torch.Tensor,
-    #         target: torch.Tensor,
-    # ):
-    #     '''
-    #     Divergence Loss function, with the aim of maximizing the difference between the class's centroids.
-    #     This loss function assumes, that a randomly initialized network will randomly embed inputs, such that the
-    #     centroid of each class is roughly the same.
-
-    #     PARAMETERS
-    #     ----------
-    #     forward_pass : tensor of shape[0] = batch_size containing the embeddings for the samples
-    #     labels : tensor of same shape[0] as forward_pass containing the corresponding labels
-
-    #     RETURNS
-    #     -------
-    #     The average distance between the class's centroids in the embedding space in a 1D tensor.
-    #     '''
-
-    #     batch_size = input.shape[0]
-
-    #     if input.shape[1] != len(self.classes):
-    #         print("Number of classes in input does not match number of classes the KNNloss was initialized for")
-
-    #     # Calculate Current Centroids.
-    #     centroids = []
-    #     for _class in self.classes:
-    #         class_tensors = []
-    #         for i in range(batch_size):
-    #             target_class_porbs = target[i]
-    #             target_class = np.argmax(target_class_porbs)
-    #             if target_class == _class:
-    #                 class_tensors.append(input[i])
-    #         stacked_tensor = torch.stack(class_tensors)
-    #         centroids.append(torch.mean(stacked_tensor, dim = 0))
-
-    #     self.centroids = torch.stack(centroids)
-
-    #     # Calculate average distance between centroids.
-    #     # This part is combinatorial with respect to the number of classes.
-    #     distances = []
-    #     for class_a, centroid_a in zip(self.classes,self.centroids):
-    #         local_distances = []
-    #         for class_b, centroid_b in zip(self.classes, self.centroids):
-    #             if not class_a == class_b:
-    #                 local_distances.append(self.euclidean_distance(centroid_a, centroid_b))
-    #         distances.append(torch.mean(torch.tensor(local_distances)))
-
-    #     return torch.mean(torch.tensor(distances).pow(-1)).item()
-
-
-    # def convergence_loss_adjusted(
-    #         self,
-    #         input: torch.Tensor,
-    #         target: torch.Tensor,
-    # ):
-    #     '''
-    #     Convergence Loss function, with the aim of minimizing the average (summed?) difference between the instances and
-    #     corresponding class centroid. This function assumes that the object's centroids attribute contains embeddings
-    #     that are sufficiently different from each other.
-
-    #     PARAMETERS
-    #     ----------
-    #     foward_pass: tensor of shape[0] = batch_size containing the embeddings for the samples
-    #     labels: tensor of same shape[0] as forward_pass containing the corresponding labels
-
-    #     RETURNS
-    #     -------
-    #     The average distance between the instances and the corresponding class's centroids.
-    #     '''
-
-    #     batch_size = input.shape[0]
-    #     if input.shape[1] != len(self.classes):
-    #         print("Number of classes in input does not match number of classes the KNNloss was initialized for")
-
-
-    #     distances = []
-    #     for i in range(batch_size):
-    #         instance = input[i]
-    #         label = int(np.argmax(target[i]))
-    #         corresponding_centroid = self.centroids[label]
-    #         dist = self.euclidean_distance(instance, corresponding_centroid)
-    #         distances.append(dist)
-
-    #     return torch.mean(torch.tensor(distances)).item()
-
-    # def combined_loss(
-    #         self,
-    #         input: torch.Tensor,
-    #         target: torch.Tensor,
-    # ):
-    #     return self.divergence_loss_adjusted(input, target) + self.convergence_loss_adjusted(input, target)
-
+###################
+##### HELPERS #####
+###################
 
     def get_centroids(self):
         return self.centroids
 
-    def euclidean_distance(self, tensor_a, tensor_b, dim = 0):
+    def euclidean_distance(self, tensor_a : torch.Tensor, tensor_b : torch.Tensor, dim = 0):
+        '''
+        Returns euclidean distance between two tensors.
+
+        PARAMETERS
+        ----------
+        tensor_a, tensor_b : torch.Tensor of which the euclidean distance is to be calculated.
+        dim : int along which dimension the tensor will be summed. This can most likely be left at the default. If not, you will probably know.
+
+        RETURNS
+        -------
+        torch.Tensor containing a single scalar, the euclidean distance. This tensor remains attached to the computational graph.
+        '''
         return (tensor_b - tensor_a).pow(2).sum(dim).sqrt()
+
     
-    def cosine_similarity(self, tensor_a, tensor_b, dim = 0):
+    def cosine_similarity(self, tensor_a, tensor_b):
         return self.cos(tensor_a, tensor_b)
 
     def prepare_divergence(self, input, target):
@@ -433,7 +351,7 @@ class KNNLoss():
 
         # If there are no centroids, randomly generate some
         if self.centroids is None:
-            self.centroids = utility_functions.to_device(torch.randn(len(self.classes), input[0].shape[0]), self.device)
+            self.centroids = utility_functions.to_device(torch.rand(len(self.classes), input.shape[1]), self.device)
 
         centroids = []
         for _class in self.classes:
