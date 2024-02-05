@@ -187,7 +187,7 @@ class LowDimModelTrainer:
             for i, batch in enumerate(train_loader):
                 batch_images, batch_labels = batch
                 batch_embeddings, batch_out = self.model_wrapper.training_step(batch_images)
-                if loss_function_key == "divergence_loss":
+                if loss_function_key == "divergence_loss" or loss_function_key == 'combined_loss':
                     # The divergence loss is plugged directly onto the final embedding layer of the CNN and ignores the fc layer
                     batch_loss = loss_func(batch_embeddings, batch_labels)
                 elif loss_function_key == "cross_entropy_loss":
@@ -280,6 +280,8 @@ class LowDimModelTrainer:
             return self.knn_loss.divergence_loss
         elif key == "cross_entropy_loss":
             return F.cross_entropy
+        elif key == "combined_loss":
+            return self.knn_loss.combined_loss
 
     def store_epoch_result(self, epoch_result, epoch, model_subfolder_path):
         epoch_folder_path = f"{model_subfolder_path}/epoch_{epoch}"
