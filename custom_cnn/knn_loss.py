@@ -14,9 +14,48 @@ class KNNLoss():
         self.classes = classes
         self.device = utility_functions.get_default_device()
         self.mean_centroid_distance = 0
+        
+        self.cos = nn.CosineSimilarity(dim = 0)
 
         if diff == 'euclidian':
             self.diff = self.euclidean_distance
+
+
+    def loss_renewed(self, input: torch.Tensor, target: torch.Tensor):
+        '''
+        '''
+
+        self.prep_divergence_renewed(input, target)
+        # After calling this method, self.centroids will always have shape[0]==len(self.classes)
+        
+        # Calculate mean cosine similarities between centroids
+        d = []
+        for centroid_a in self.centroids:
+            local_d = []    # for each centroid collect distances to other centroids in a list. This list should be ALWAYS be 9 elements long
+            for centroid_b in self.centroids:
+                if not torch.equal(centroid_a, centroid_b):
+                    local_d.append(self.cosine_similarity(centroid_a, centroid_b))
+            local_t = torch.stack(local_d)
+            d.append(torch.mean(local_t))
+        
+        self.mean_centroid_distance = torch.stack(d).mean()
+
+        # Calculate mean euclidean distance between instances and their centroids
+        instance_d = []
+        for inp, tar in zip(input, target):
+            label = int(tar)
+            corresponding_centroid = self.centroids[label].detach()
+            instance_d.append(self.euclidean_distance(inp, corresponding_centroid))
+
+        d = torch.mul(torch.stack(instance_d), 1)
+
+        convergence = torch.mean(d)
+        uniformity = torch.std(d)
+        divergence = torch.div(1, torch.sub(1, self.mean_centroid_distance))    # Cosine Similarity maxes out at 
+
+        # We don't need a ratio with cosine similarity (since it is between -1 and 1, or 0 and 1 as we take the abs)
+
+        return torch.mul(divergence, convergence.add(uniformity))
 
 
     def combined_loss(self, input: torch.Tensor, target: torch.Tensor):
@@ -43,6 +82,7 @@ class KNNLoss():
         )
 
         return torch.mul(scaler, torch.add(convergence, torch.add(uniformity, divergence)))
+
 
     def combined_loss_optim(self, input: torch.Tensor, target: torch.Tensor):
         '''
@@ -324,6 +364,9 @@ class KNNLoss():
 
     def euclidean_distance(self, tensor_a, tensor_b, dim = 0):
         return (tensor_b - tensor_a).pow(2).sum(dim).sqrt()
+    
+    def cosine_similarity(self, tensor_a, tensor_b, dim = 0):
+        return self.cos(tensor_a, tensor_b)
 
     def prepare_divergence(self, input, target):
         '''
@@ -349,6 +392,28 @@ class KNNLoss():
             distances.append(torch.mean(local_tensor))
 
         return distances
+    
+    def prep_divergence_renewed(self, input, target):
+        '''
+        This is a function that calculates the class centroids of a batch and updates self.centroids. It takes the current values of self.centroids into account to allow for two things: It a) ensures that the self.centroids tensor is always of len(self.classes) and b) that there is some random initiation, i.e. some initial scattering of the centroids of the hyper-diagonal (is that even a word)?
+        This method does not return anything. It only updates self.centroids.
+        '''
+
+        # If there are no centroids, randomly generate some
+        if self.centroids is None:
+            self.centroids = utility_functions.to_device(torch.randn(len(self.classes), input[0].shape[0]), self.device)
+
+        centroids = []
+        for _class in self.classes:
+            class_tensors = [self.centroids[_class].detach()]                # The first value in the class tensors is the old centroid. This has very little impact but makes sure that the list is never empty.
+            for inp, tar in zip(input, target):
+                if int(tar) == _class:
+                    class_tensors.append(inp)
+            stacked_tensor = torch.stack(class_tensors)
+            centroids.append(torch.mean(stacked_tensor, dim = 0))
+
+        self.centroids = torch.stack(centroids)
+
     
     def predefine_centroids(self, dimensionality : int):
         '''

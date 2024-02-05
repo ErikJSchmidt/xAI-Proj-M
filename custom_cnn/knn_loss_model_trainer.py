@@ -148,7 +148,7 @@ class KnnLossModelTrainer:
 
         learning_rate_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=self.trainer_config['lr_reduce_patience'])
 
-        self.knn_loss.predefine_centroids(128)
+        # self.knn_loss.predefine_centroids(128)
 
         for epoch in range(epochs):
             print("Epoch:", epoch)
@@ -168,7 +168,8 @@ class KnnLossModelTrainer:
             # else:
             #     loss_func = self.knn_loss.divergence_loss
             # loss_func = self.knn_loss.combined_loss
-            loss_func = self.knn_loss.combined_convergence
+            
+            loss_func = self.knn_loss.loss_renewed
 
             # Training Phase
             train_losses = []
@@ -190,7 +191,7 @@ class KnnLossModelTrainer:
                 self.knn_loss.convergence_loss(out, labs).item(),
                 self.knn_loss.max_convergence_loss(out, labs).item(),
                 self.knn_loss.uniformity_loss(out, labs).item(),
-                # self.knn_loss.divergence_diagnostic().item()
+                self.knn_loss.divergence_diagnostic().item()
             )
             print("\n")
 
