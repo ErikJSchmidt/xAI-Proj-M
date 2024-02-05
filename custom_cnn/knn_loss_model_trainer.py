@@ -163,13 +163,13 @@ class KnnLossModelTrainer:
             #     loss_func = self.knn_loss.combined_loss
 
             # ! Essentially, this turns into an absolute mess as the scheduling of loss functions is important for training performance.
-            # if epoch > 0:
-            #     loss_func = self.knn_loss.combined_loss
-            # else:
-            #     loss_func = self.knn_loss.divergence_loss
+            if epoch > 2:
+                loss_func = self.knn_loss.convergence_loss
+            else:
+                loss_func = self.knn_loss.divergence_renewed
             # loss_func = self.knn_loss.combined_loss
             
-            loss_func = self.knn_loss.loss_renewed
+            # loss_func = self.knn_loss.loss_renewed
 
             # Training Phase
             train_losses = []

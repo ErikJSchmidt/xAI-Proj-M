@@ -23,6 +23,7 @@ class KNNLoss():
 
     def loss_renewed(self, input: torch.Tensor, target: torch.Tensor):
         '''
+        This is a renewed approach for a combined loss. It does not work, because it optimizes towards cramming all instances into a really small space.
         '''
 
         self.prep_divergence_renewed(input, target)
@@ -30,15 +31,24 @@ class KNNLoss():
         
         # Calculate mean cosine similarities between centroids
         d = []
-        for centroid_a in self.centroids:
-            local_d = []    # for each centroid collect distances to other centroids in a list. This list should be ALWAYS be 9 elements long
-            for centroid_b in self.centroids:
-                if not torch.equal(centroid_a, centroid_b):
+        # for centroid_a in self.centroids:
+        #     local_d = []    # for each centroid collect distances to other centroids in a list. This list should be ALWAYS be 9 elements long
+        #     for centroid_b in self.centroids:
+        #         if not torch.equal(centroid_a, centroid_b):
+        #             local_d.append(self.cosine_similarity(centroid_a, centroid_b))
+        #     local_t = torch.stack(local_d)
+        #     d.append(torch.mean(local_t))
+        for i in range(len(self.centroids)):
+            centroid_a = self.centroids[i]
+            local_d = []
+            for j in range(len(self.centroids)):
+                centroid_b = self.centroids[j]
+                if not i == j:
                     local_d.append(self.cosine_similarity(centroid_a, centroid_b))
             local_t = torch.stack(local_d)
             d.append(torch.mean(local_t))
         
-        self.mean_centroid_distance = torch.stack(d).mean()
+        self.mean_centroid_distance = torch.stack(d).abs().mean()
 
         # Calculate mean euclidean distance between instances and their centroids
         instance_d = []
@@ -145,6 +155,28 @@ class KNNLoss():
         '''
 
         return self.mean_centroid_distance
+    
+
+    def divergence_renewed(self, input : torch.Tensor, target : torch.Tensor):
+        '''
+        Renewed Divergence loss, working towards generating spread-out centroids.
+        '''
+
+        self.prep_divergence_renewed(input, target)
+
+        d = []
+        for i in range(len(self.centroids)):
+            centroid_a = self.centroids[i]
+            local_d = []
+            for j in range(len(self.centroids)):
+                centroid_b = self.centroids[j]
+                if not i == j:
+                    local_d.append(self.cosine_similarity(centroid_a, centroid_b))
+            local_t = torch.stack(local_d)
+            d.append(torch.mean(local_t))
+        
+        self.mean_centroid_distance = torch.stack(d).abs().mean()
+        return torch.div(1, torch.sub(1, self.mean_centroid_distance))
 
 
     def convergence_loss(self, input : torch.Tensor, target : torch.Tensor):
