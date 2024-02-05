@@ -48,6 +48,11 @@ class LowDimModelTrainer:
         print(type(device_aware_validation_data_loader))
         print(type(device_aware_test_data_loader))
 
+        print("Pass test samples through initialized model to get initial distribution")
+
+        pre_training_result = self.evaluate_model(device_aware_test_data_loader)
+        self.store_test_result(pre_training_result, test_folder_path = f"{model_subfolder_path}/untrained")
+
         training_history = self.fit_and_store_results(
             epochs=self.trainer_config['epochs'],
             lr=self.trainer_config['learning_rate_start'],
@@ -64,8 +69,8 @@ class LowDimModelTrainer:
         print(f"Done processing the test set")
 
 
-        # Save training results
-        self.store_test_result(test_set_result, model_subfolder_path)
+        # Save final results on test set
+        self.store_test_result(test_set_result, test_folder_path = f"{model_subfolder_path}/test")
 
         # store parameters of the training run
         training_run_file = open(model_subfolder_path + "/training_run.json", "w+")
@@ -320,9 +325,8 @@ class LowDimModelTrainer:
         torch.save(epoch_val_predictions, f"{epoch_folder_path}/val_predictions.pt")
         torch.save(epoch_val_labels, f"{epoch_folder_path}/val_labels.pt")
 
-    def store_test_result(self, test_result, model_subfolder_path):
+    def store_test_result(self, test_result, test_folder_path):
         # store results of the test set
-        test_folder_path = f"{model_subfolder_path}/test"
         os.makedirs(test_folder_path)
 
         torch.save(test_result['embeddings'], f"{test_folder_path}/test_embeddings.pt")
