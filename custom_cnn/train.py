@@ -8,6 +8,7 @@ from networks.model_plain_18_layer import Plain18Layer
 from networks.model_plain_32_layer import Plain32Layer
 from networks.model_skipped_18_layer import Skipped18Layer
 from networks.model_skipped_18_layer_for_embedding import Skipped18LayerForEmbbeding
+from networks.model_skipped_18_layer_for_low_dim_embedding import Skipped18LayerForLowDimEmbbeding
 from networks.model_skipped_32_layer import Skipped32Layer
 
 from networks.model_backloaded_12_layer import BackLoaded12Layer
@@ -16,6 +17,8 @@ from networks.model_uniform_12_layer import Uniform12Layer
 from networks.model_uniform_12_layer_skipped import Uniform12LayerSkipped
 from networks.model_frontloaded_12_layer import FrontLoaded12Layer
 from networks.model_frontloaded_12_layer_skipped import FrontLoaded12LayerSkipped
+
+from networks.knn_loss_model import KNNLossModel
 
 from model_wrapper import ModelWrapper
 from model_trainer import ModelTrainer
@@ -145,6 +148,8 @@ def get_model(model_name):
         raw_model = Skipped32Layer()
     elif model_name == "Skipped18LayerForEmbbeding":
         raw_model = Skipped18LayerForEmbbeding()
+    elif model_name == 'Skipped18LayerForLowDimEmbbeding':
+        raw_model = Skipped18LayerForLowDimEmbbeding()
     elif model_name == "Uniform12Layer":
         raw_model = Uniform12Layer()
     elif model_name == "Uniform12LayerSkipped":
@@ -157,6 +162,8 @@ def get_model(model_name):
         raw_model = FrontLoaded12Layer()
     elif model_name == 'FrontLoaded12LayerSkipped':
         raw_model = FrontLoaded12LayerSkipped()
+    elif model_name == 'KNNLossModel':
+        raw_model = KNNLossModel()
     else:
         print(f"Model name {model_name} not valid.")
     return raw_model

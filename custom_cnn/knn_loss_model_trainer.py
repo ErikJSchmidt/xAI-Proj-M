@@ -12,7 +12,10 @@ from torch.utils.data.dataloader import DataLoader
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from utility_functions import DeviceDataLoader, get_default_device
 import torch.nn.functional as F
+from torch import nn
+from sklearn.metrics import accuracy_score
 
+import tqdm
 
 class KnnLossModelTrainer:
 
@@ -77,6 +80,8 @@ class KnnLossModelTrainer:
         self.model_wrapper.save_model(
             dir_path=model_subfolder_path
         )
+
+        return model_subfolder_path
 
     def prepare_dataloaders(self):
         print("Load train data from " + self.trainer_config['train_dataset_dir'])
@@ -147,36 +152,46 @@ class KnnLossModelTrainer:
 
         learning_rate_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=self.trainer_config['lr_reduce_patience'])
 
+        loss_function_key = self.trainer_config["loss_function"]
+        loss_func = self.get_loss_function_for_key(loss_function_key)
+        print(f"Use loss function: {loss_function_key}, {str(loss_func)}")
 
+        if loss_function_key in ["divergence_loss"]:
+            print("Remove fc layer before training")
+            removed_fc = self.model_wrapper.model.fc
+            self.model_wrapper.model.fc = Identity()
 
         for epoch in range(epochs):
             print("Epoche:", epoch)
-            # Depending on epoch use different loss function
-            if epoch < epochs *2/3:
-                loss_func = F.cross_entropy
-            elif epoch -1 < epochs *2/3 and epoch >= epochs*2/3:
-                loss_func = self.knn_loss.combined_loss
-                # Reset the learning rate scheduler as we swapped the loss function
-                learning_rate_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=self.trainer_config['lr_reduce_patience'])
-            else:
-                loss_func = self.knn_loss.combined_loss
-
-
+            # the output the model returned for all samples in the epoch
+            outputs = []
+            # labels in order as processed in this epoch
+            labels = []
 
             # Training Phase
             train_losses = []
             train_accuracies = []
-            for batch in train_loader:
-                batch_train_result = self.model_wrapper.training_step(batch, loss_func=loss_func)
-                loss = batch_train_result['batch_loss']
-                train_losses.append(loss)
-                train_accuracies.append(batch_train_result['batch_acc'])
-                loss.backward()
+            for i, batch in enumerate(train_loader):
+                images, batch_labels = batch
+                batch_output = self.model_wrapper.forward_batch(images)
+                batch_loss = loss_func(batch_output, batch_labels)
+                batch_loss.backward()
                 optimizer.step()
                 optimizer.zero_grad()
+
+                train_losses.append(batch_loss)
+                outputs = outputs + list(batch_output)
+                labels = labels + list(labels)
+
+                batch_accuracy = accuracy_score(batch_labels, batch_output)
+                train_accuracies.append(batch_accuracy)
+
+
             # Validation phase
-            print("evaluate")
+            print("\nevaluate\n")
             epoch_val_result = self.model_wrapper.evaluate_model(val_loader[0], loss_func)
+
+
 
             epoch_result = {
                 'lr': optimizer.param_groups[0]['lr'],
@@ -190,4 +205,25 @@ class KnnLossModelTrainer:
 
             history.append(epoch_result)
             print(f"Epoch {epoch}:\n{epoch_result}")
+
+        if loss_function_key in ["divergence_loss"]:
+            print("Add fc that was removed before back to model")
+            self.model_wrapper.model.fc = removed_fc
+
         return history
+
+    def get_loss_function_for_key(self, key):
+        if key == "divergence_loss":
+            return self.knn_loss.divergence_loss
+        elif key == "cross_entropy_loss":
+            return F.cross_entropy
+
+
+
+
+class Identity(nn.Module):
+    def __init__(self):
+        super(Identity, self).__init__()
+
+    def forward(self, x):
+        return x

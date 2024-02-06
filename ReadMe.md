@@ -17,3 +17,6 @@ The goal of this module is to design and implement CNNs for image classifiactaio
 ### Sources
 - https://github.com/abhishek-kathuria/CIFAR100-Image-Classification/blob/main/CNN.ipynb
 - https://www.kaggle.com/code/shadabhussain/cifar-10-cnn-using-pytorch
+
+#### Center loss papers
+- https://ieeexplore.ieee.org/document/9521556
