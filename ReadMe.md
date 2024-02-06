@@ -6,13 +6,7 @@ The goal of this module is to design and implement CNNs for image classifiactaio
 ## Repository content
 - custom_cnn: Here we designed our own models and craeted a pipeline for training those models, while tracking configurations and results.
 - embeddings: Here we extract embeddings from allready trained models and evaluate their knn-classification performance
-- lowdim: 
-
-- data: directory to locally store datasets
-- download_dataset.ipynb: Notebook used to download needed datasets ( Cifar10,)
-- explore_dataset.ipynb: Notebook for some exploration of the cifar10 dataset and some PyTorch functionalities
-- models.py: Python script for the custom CNN architecture 
-- train_cnn.ipynb: Notebook used to train a model from models.py
+- lowdim: Here we adjusted one of our CNNs to only have two features in the embedding layer. Consequently the produced mebeddings can be plotted in a plane which allows for some trouble shooting. 
 
 ### Sources
 - https://github.com/abhishek-kathuria/CIFAR100-Image-Classification/blob/main/CNN.ipynb
