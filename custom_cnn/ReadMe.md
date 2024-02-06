@@ -1,6 +1,14 @@
 # Custom CNNs
 As first step of the project we implement CNN models with pytorch and explore effects of different model shapes.
 
+## Contents
+- data: directory to locally store datasets
+- download_dataset.ipynb: Notebook used to download needed datasets ( Cifar10,)
+- explore_dataset.ipynb: Notebook for some exploration of the cifar10 dataset and some PyTorch functionalities
+- networks: Python scripts for the custom CNN architectures 
+- train.py: Script used to trigger training with the model_trainer
+- train_mixed.py: Script that tiggers training with the extended knn_loss_model_trainer, which allows to train with different loss functions in different epochs
+
 ## How to run
 - configure parameters in training_config.json as needed
 - run train.py with root dir path as param
