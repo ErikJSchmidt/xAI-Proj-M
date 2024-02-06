@@ -15,6 +15,7 @@ import torch.nn.functional as F
 from torch import nn
 from sklearn.metrics import accuracy_score
 
+import tqdm
 
 class KnnLossModelTrainer:
 
@@ -187,7 +188,7 @@ class KnnLossModelTrainer:
 
 
             # Validation phase
-            print("evaluate")
+            print("\nevaluate\n")
             epoch_val_result = self.model_wrapper.evaluate_model(val_loader[0], loss_func)
 
 
