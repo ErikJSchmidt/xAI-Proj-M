@@ -40,11 +40,39 @@ def describe_epoch_result(epoch_result_subfolder_path):
     return description
 
 
-def plot_2d_embeddings(epoch_result_subfolder_path):
-    embedding_filename = "train_embeddings"
-    label_filename = "train_labels"
+def plot_2d_embeddings(epoch_result_subfolder_path, embedding_filename, label_filename):
     embeddings = torch.load(f"{epoch_result_subfolder_path}/{embedding_filename}.pt", map_location=torch.device('cpu'))
     labels = torch.load(f"{epoch_result_subfolder_path}/{label_filename}.pt", map_location=torch.device('cpu'))
+    print(len(labels))
+    print(len(labels[0]))
+    print(len(embeddings))
+    print(len(embeddings[0]))
+    embeddings_by_class = []
+    for class_nr in range(0, 10):
+        embeddings_by_class.append([])
+
+    for embedding, class_nr in zip(embeddings, labels):
+        embeddings_by_class[class_nr].append(embedding)
+
+    colors = cm.rainbow(np.linspace(0, 1, len(embeddings_by_class)))
+
+    for class_embeddings, color in list(zip(embeddings_by_class, colors)):
+        x_values = [embedding[0] for embedding in class_embeddings]
+        y_values = [embedding[1] for embedding in class_embeddings]
+        plt.scatter(
+            x=x_values,
+            y=y_values,
+            c=np.array([color])
+        )
+
+    plt.show()
+
+def plot_2d_embeddings_batched(epoch_result_subfolder_path, embedding_filename, label_filename):
+    embedding_batches = torch.load(f"{epoch_result_subfolder_path}/{embedding_filename}.pt", map_location=torch.device('cpu'))
+    label_batches = torch.load(f"{epoch_result_subfolder_path}/{label_filename}.pt", map_location=torch.device('cpu'))
+
+    embeddings = [emb for batch in embedding_batches for emb in batch]
+    labels = [lab for batch in label_batches for lab in batch]
 
     embeddings_by_class = []
     for class_nr in range(0, 10):
@@ -67,11 +95,44 @@ def plot_2d_embeddings(epoch_result_subfolder_path):
     plt.show()
 
 
-def plot_2d_class_centroids(epoch_result_subfolder_path):
-    embedding_filename = "train_embeddings"
-    label_filename = "train_labels"
+def plot_2d_class_centroids(epoch_result_subfolder_path, embedding_filename, label_filename):
     embeddings = torch.load(f"{epoch_result_subfolder_path}/{embedding_filename}.pt", map_location=torch.device('cpu'))
     labels = torch.load(f"{epoch_result_subfolder_path}/{label_filename}.pt", map_location=torch.device('cpu'))
+
+    embeddings_by_class = []
+    for class_nr in range(0, 10):
+        embeddings_by_class.append([])
+
+    for embedding, class_nr in zip(embeddings, labels):
+        embeddings_by_class[class_nr].append(embedding)
+
+    centroids = []
+    for class_embeddings in embeddings_by_class:
+        x_values = [embedding[0] for embedding in class_embeddings]
+        y_values = [embedding[1] for embedding in class_embeddings]
+
+        x_mean = np.mean(x_values)
+        y_mean = np.mean(y_values)
+
+        centroids.append([x_mean, y_mean])
+
+    colors = cm.rainbow(np.linspace(0, 1, len(embeddings_by_class)))
+
+    for centroid, color in zip(centroids, colors):
+        plt.scatter(
+            x=[centroid[0]],
+            y=[centroid[1]],
+            c=np.array([color])
+        )
+
+    plt.show()
+
+def plot_2d_class_centroids_batched(epoch_result_subfolder_path, embedding_filename, label_filename):
+    embedding_batches = torch.load(f"{epoch_result_subfolder_path}/{embedding_filename}.pt", map_location=torch.device('cpu'))
+    label_batches = torch.load(f"{epoch_result_subfolder_path}/{label_filename}.pt", map_location=torch.device('cpu'))
+
+    embeddings = [emb for batch in embedding_batches for emb in batch]
+    labels = [lab for batch in label_batches for lab in batch]
 
     embeddings_by_class = []
     for class_nr in range(0, 10):
